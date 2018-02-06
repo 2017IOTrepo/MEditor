@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/file"
+            android:icon="@drawable/ic_launcher_background"
+            android:title="@string/File" />
+        <item
+            android:id="@+id/theme"
+            android:icon="@drawable/ic_launcher_background"
+            android:title="@string/Dark" />
+
+        <item
+            android:id="@+id/action_settings"
+            android:icon="@drawable/ic_launcher_background"
+            android:title="@string/action_settings" />
+        <item
+            android:id="@+id/diaryui"
+            android:icon="@drawable/ic_launcher_background"
+            android:title="@string/diaryui" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_launcher_background"
+                android:title="@string/Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_launcher_background"
+                android:title="@string/export" />
+        </menu>
+    </item>
+
+</menu>
