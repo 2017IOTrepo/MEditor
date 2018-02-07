@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">MEditor</string>
+    <string name="title_activity_main2">MEditor</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">设置</string>
+    <string name="searchview">搜索</string>
+    <string name="File">文件</string>
+    <string name="Theme">主题</string>
+    <string name="Dark">夜间模式</string>
+    <string name="Share">分享</string>
+    <string name="export">导出</string>
+    <string name="diaryui">日记模式</string>
 </resources>
