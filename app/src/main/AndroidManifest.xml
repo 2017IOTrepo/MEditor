@@ -19,7 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.EditActivity"></activity>
+        <activity android:name=".activity.EditActivity" />
+        <activity
+            android:name=".fragment.Edit_fragment_Activity"
+            android:label="@string/title_activity_edit_fragment_"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".fragment.Display_fragment_Activity"></activity>
     </application>
 
 </manifest>

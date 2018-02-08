@@ -13,4 +13,5 @@
     <string name="Share">分享</string>
     <string name="export">导出</string>
     <string name="diaryui">日记模式</string>
+    <string name="title_activity_edit_fragment_">edit_fragment_Activity</string>
 </resources>
