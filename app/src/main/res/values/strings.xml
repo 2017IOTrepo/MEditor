@@ -14,4 +14,6 @@
     <string name="export">导出</string>
     <string name="diaryui">日记模式</string>
     <string name="title_activity_edit_fragment_">edit_fragment_Activity</string>
+    <string name="edit_mode_string">编辑模式</string>
+    <string name="display_mode_string">显示模式</string>
 </resources>
