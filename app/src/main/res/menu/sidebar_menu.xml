@@ -29,10 +29,6 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_launcher_background"
                 android:title="@string/Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_launcher_background"
-                android:title="@string/export" />
         </menu>
     </item>
 

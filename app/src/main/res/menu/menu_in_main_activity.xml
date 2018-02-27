@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
     <item
         android:id="@+id/search_item"
         android:icon="@drawable/ic_search_black_24dp"
         android:orderInCategory="90"
         android:title="@string/searchview"
-        app:showAsAction="ifRoom">
+        app:showAsAction="ifRoom"/>
 
-    </item>
+    <item
+        android:id="@+id/star_files_item"
+        android:orderInCategory="100"
+        android:title="星标文件"
+        app:showAsAction="never"
+        />
+
 </menu>

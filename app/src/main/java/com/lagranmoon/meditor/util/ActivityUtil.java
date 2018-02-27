@@ -1,5 +1,7 @@
 package com.lagranmoon.meditor.util;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
  * */
 
 public class ActivityUtil {
-
     /**
      * 添加Fragment到布局容器中
      * @param fragmentManager 传入的FragmentManager
