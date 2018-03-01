@@ -1,9 +1,11 @@
 package com.lagranmoon.meditor.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,11 +19,16 @@ import android.view.MenuItem;
 
 import com.lagranmoon.meditor.R;
 
+import static com.lagranmoon.meditor.R.color.colorDefault;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private SearchView searchView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
+
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +40,7 @@ public class MainActivity extends AppCompatActivity
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //仅是跳转到edit_activity 未完成文件操作
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 startActivity(intent);
             }
@@ -46,6 +54,15 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refres);
+        swipeRefreshLayout.setColorSchemeColors(R.color.colorDefault);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshFiles();
+            }
+        });
     }
 
     @Override
@@ -56,6 +73,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void initFiles() {
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -125,4 +145,25 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void refreshFiles() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initFiles();
+                    }
+                });
+            }
+        })
+    }
+
 }

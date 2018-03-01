@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
+    android:id="@+id/cardView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -41,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
                 android:textSize="20sp"
-                tools:text="Don't Let Go"/>
+                tools:text="test"/>
 
 
             <TextView
@@ -51,9 +52,17 @@
                 android:layout_alignBottom="@+id/linearLayout"
                 android:layout_toEndOf="@+id/item_text_view"
                 android:lines="1"
-                tools:text="Don Diablo - Don't Let Go"/>
-
+                tools:text="2018.03.01"/>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/star_Image_View"
+            android:src="@drawable/ic_star_border_white_2x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
+
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

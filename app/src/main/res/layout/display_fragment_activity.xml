@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/display_fragment_activity"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.lagranmoon.meditor.fragment.Display_fragment_Activity">
+    android:orientation="vertical">
+
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:gravity="top"
+        android:textSize="17sp"
+        android:textColor="#111"
+        android:hint="标题"
+        android:inputType="text"
+        android:paddingBottom="13dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="13dp"
+        android:scrollHorizontally="false"
+        android:singleLine="true"
+        tools:ignore="InvalidImeActionId" />
 
     <View
+        android:id="@+id/edit_gary_line"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#000"/>
+        android:layout_height="0.3dp"
+        android:background="@color/colorGary"/>
 
-    <TextView
+    <com.mukesh.MarkdownView
+        android:textSize="16sp"
+        android:textColor="#333"
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:gravity="top"
+        android:hint="内容"
+        android:inputType="textMultiLine|textLongMessage"
+        android:minHeight="200dp"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        android:singleLine="false"/>
 
 </LinearLayout>
