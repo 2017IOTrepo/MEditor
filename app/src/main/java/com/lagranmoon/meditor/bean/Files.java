@@ -10,39 +10,14 @@ import java.util.Date;
 public class Files {
 
     private String title;
-    private String Path;
+    private String path;
     private Date date;
     private long size;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
+    public Files(String title, String path, Date date, long size){
         this.title = title;
-    }
-
-    public String getPath() {
-        return Path;
-    }
-
-    public void setPath(String path) {
-        Path = path;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
+        this.path = path;
         this.date = date;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
         this.size = size;
     }
 
@@ -50,7 +25,7 @@ public class Files {
     public String toString() {
         return "Files{" +
                 "title='" + title + '\'' +
-                ", Path='" + Path + '\'' +
+                ", path='" + path + '\'' +
                 ", date=" + date +
                 ", size=" + size +
                 '}';

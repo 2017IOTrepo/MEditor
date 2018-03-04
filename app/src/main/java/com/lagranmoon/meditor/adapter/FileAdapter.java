@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.lagranmoon.meditor.bean.Files;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -18,9 +19,25 @@ import java.util.List;
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     private List<Files> mFiles;
-    private LayoutInflater minflater;
+    private LayoutInflater mInflater;
     private Context mcontext;
-    String folder;
+
+    public FileAdapter(Context context, List<Files> files){
+        mInflater = LayoutInflater.from(context);
+        this.mcontext = context;
+    }
+
+    //加删操作
+    public void addFile(int position, Files files){
+        mFiles.add(position, files);
+        notifyItemInserted(position);
+    }
+
+    public void removeFile(Files files){
+        int position = mFiles.indexOf(files);
+        mFiles.remove(position);
+        notifyItemRemoved(position);
+    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ViewHolder(View itemView) {
@@ -31,6 +48,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     @Override
     public FileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+
         return null;
     }
 
