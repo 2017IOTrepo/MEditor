@@ -14,14 +14,19 @@ import com.lagranmoon.meditor.R;
 
 public class Edit_fragment_Activity extends Fragment {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static Edit_fragment_Activity newInstance(){
+
+        Bundle bundle = new Bundle();
+        Edit_fragment_Activity edit_fragment_activity
+                = new Edit_fragment_Activity();
+        edit_fragment_activity.setArguments(bundle);
+
+        return edit_fragment_activity;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.edit_fragment_activity, container, false);
     }
 }

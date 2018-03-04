@@ -3,23 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/search_item"
         android:icon="@drawable/ic_search_black_24dp"
         android:orderInCategory="90"
         android:title="@string/searchview"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/star_files_item"
         android:orderInCategory="100"
+        android:icon="@drawable/ic_star_border_white_24dp"
         android:title="星标文件"
-        app:showAsAction="never"
+        app:showAsAction="always"
         />
 
 </menu>

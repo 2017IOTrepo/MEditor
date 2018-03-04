@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.transition.Transition;
 import com.lagranmoon.meditor.R;
+import com.lagranmoon.meditor.adapter.ViewPagerAdapter;
 import com.lagranmoon.meditor.fragment.Display_fragment_Activity;
 import com.lagranmoon.meditor.fragment.Edit_fragment_Activity;
 
@@ -30,9 +32,6 @@ public class EditActivity extends AppCompatActivity {
     public final int DISPLAY_MODE = 1;
 
     private ViewPager mViewPager;//滑动效果
-    private int currentIndex = 0;//当前页卡标号
-    private ArrayList<Fragment> fragmentArrayList;//存放fragment数组
-    private FragmentManager fragmentManager;//管理fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +39,7 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.edit_activity);
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
-        InitFragment();//初始化fragment
         InitViewPager();// 初始化ViewPager
-    }
-
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
     }
 
     //菜单选项的逻辑
@@ -80,37 +73,13 @@ public class EditActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void InitFragment() {
-        fragmentArrayList = new ArrayList<Fragment>();
-        fragmentArrayList.add(new Edit_fragment_Activity());
-        fragmentArrayList.add(new Display_fragment_Activity());
-
-        fragmentManager = getSupportFragmentManager();
-    }
-
     private void InitViewPager() {
 
-        //fragment适配器
-        mViewPager.setAdapter(new FragmentPagerAdapter(fragmentManager) {
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(Edit_fragment_Activity.newInstance());
+        viewPagerAdapter.addFragment(Display_fragment_Activity.newInstance());
 
-            @Override
-            public Fragment getItem(int position) {
-                return fragmentArrayList.get(position);
-            }
-
-            @Override
-            public int getCount() {
-                return fragmentArrayList.size();
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                super.destroyItem(container, position, object);
-            }
-        });
-
-        //ViewPager缓存2个页面
-        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setAdapter(viewPagerAdapter);
         //设置默认打开第一页
         mViewPager.setCurrentItem(EDIT_MODE);
 
