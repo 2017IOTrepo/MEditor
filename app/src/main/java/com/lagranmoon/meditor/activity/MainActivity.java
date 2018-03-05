@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.view.View;
@@ -18,8 +17,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.lagranmoon.meditor.R;
-
-import static com.lagranmoon.meditor.R.color.colorDefault;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -86,16 +83,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.file) {
-            // Handle the camera action
-        } else if (id == R.id.theme) {
+        if (id == R.id.nightTheme) {
 
         } else if (id == R.id.action_settings) {
 
-        } else if (id == R.id.diaryui){
+        } else if (id == R.id.diaryUI){
 
         } else if (id == R.id.nav_share) {
 
+        }else if (id == R.id.nav_about){
+            AboutActivity.startActivity(MainActivity.this);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

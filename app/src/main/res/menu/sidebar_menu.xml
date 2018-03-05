@@ -5,20 +5,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/file"
-            android:icon="@drawable/ic_launcher_background"
-            android:title="@string/File" />
-        <item
-            android:id="@+id/theme"
-            android:icon="@drawable/ic_launcher_background"
+            android:id="@+id/nightTheme"
+            android:icon="@drawable/night_mode_icon"
             android:title="@string/Dark" />
 
         <item
             android:id="@+id/action_settings"
-            android:icon="@drawable/ic_launcher_background"
+            android:icon="@drawable/ic_settings_black_18dp"
             android:title="@string/action_settings" />
         <item
-            android:id="@+id/diaryui"
+            android:id="@+id/diaryUI"
             android:icon="@drawable/ic_launcher_background"
             android:title="@string/diaryui" />
     </group>
@@ -27,8 +23,13 @@
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_launcher_background"
+                android:icon="@drawable/ic_share_36pt_2x"
                 android:title="@string/Share" />
+
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_information"
+                android:title="关于" />
         </menu>
     </item>
 
