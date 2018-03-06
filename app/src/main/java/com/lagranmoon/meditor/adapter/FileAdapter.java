@@ -28,9 +28,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
     private Context mcontext;
     private boolean requsetDelete = false;
 
-    public FileAdapter(Context context, List<Files> files){
+    public FileAdapter(List<Files> files, Context context){
         mInflater = LayoutInflater.from(context);
         this.mcontext = context;
+        mFiles = files;
     }
 
     //加删操作
@@ -52,15 +53,21 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
         return viewHolder;
     }
 
+    @Override
+    public void onBindViewHolder(final FilesViewHolder holder, int position) {
+        holder.bindHolder(mFiles.get(position));
+    }
 
-    /*
-    * 下面的接口和方法是从某些文件扒下来的
-    * 不需要管太多 用的时候再用
-    * */
+    @Override
+    public int getItemCount() {
+        return mFiles.size();
+    }
+
+
     public interface OnItemClickLitener
     {
-        void onItemClick(View view, int position);
-        void onItemLongClick(View view , int position);
+        void onItemClick(Files files);
+        void onItemLongClick(Files files);
     }
 
     private OnItemClickLitener mOnItemClickLitener;
@@ -68,42 +75,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
     public void setOnItemClickLitener(OnItemClickLitener mOnItemClickLitener)
     {
         this.mOnItemClickLitener = mOnItemClickLitener;
-    }
-
-
-    @Override
-    public void onBindViewHolder(final FilesViewHolder holder, int position) {
-
-        Files file = mFiles.get(position);
-
-        holder.fileName.setText(file.getTitle());
-        holder.fileTime.setText(Units.friendlyTime(file.getDate()));
-
-        if (mOnItemClickLitener != null){
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int nowPos = holder.getAdapterPosition();
-                    mOnItemClickLitener.onItemClick(holder.fileName, nowPos);
-                }
-            });
-
-//            holder.itemView.setOnLongClickListener(new View.OnLongClickListener(){
-//
-//                @Override
-//                public boolean onLongClick(View view) {
-//                    int nowPos = holder.getAdapterPosition();
-//                    mOnItemClickLitener.onItemClick(holder.itemView, nowPos);
-//                    return !requsetDelete;
-//                }
-//            });
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return mFiles.size();
     }
 
     class FilesViewHolder extends RecyclerView.ViewHolder{
@@ -118,6 +89,27 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
         public FilesViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(itemView);
+        }
+
+        public void bindHolder(final Files files) {
+            fileTime.setText(files.getTitle());
+            fileTime.setText(Units.friendlyTime(files.getDate()));
+            if (mOnItemClickLitener != null) {
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mOnItemClickLitener.onItemClick(files);
+                    }
+                });
+
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        mOnItemClickLitener.onItemLongClick(files);
+                        return !requsetDelete;
+                    }
+                });
+            }
         }
     }
 

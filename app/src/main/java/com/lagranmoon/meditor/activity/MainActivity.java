@@ -1,10 +1,14 @@
 package com.lagranmoon.meditor.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,14 +19,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.lagranmoon.meditor.R;
+import com.lagranmoon.meditor.adapter.FileAdapter;
+import com.lagranmoon.meditor.bean.Files;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FileAdapter.OnItemClickLitener {
 
     private SearchView searchView;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private RecyclerView mRecyclerView;
+    private List<Files> mFiles = new ArrayList<>();
+    private FileAdapter fileAdapter;
+    private Context mContext;
 
 
     @SuppressLint("ResourceAsColor")
@@ -52,14 +67,23 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refres);
-        swipeRefreshLayout.setColorSchemeColors(R.color.colorDefault);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refres);
+        mSwipeRefreshLayout.setColorSchemeColors(R.color.colorDefault);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refreshFiles();
             }
         });
+
+        //初始化recyclerView
+        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles, mContext));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLongClickable(true);
+        fileAdapter.setOnItemClickLitener(this);
+
     }
 
     @Override
@@ -84,12 +108,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nightTheme) {
+            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.action_settings) {
+            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.diaryUI){
+            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_share) {
+            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         }else if (id == R.id.nav_about){
             AboutActivity.startActivity(MainActivity.this);
@@ -146,6 +174,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void refreshFiles() {
+
+        //刷新搜索文件逻辑
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -165,4 +195,13 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    @Override
+    public void onItemClick(Files files) {
+
+    }
+
+    @Override
+    public void onItemLongClick(Files files) {
+
+    }
 }
