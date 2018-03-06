@@ -76,13 +76,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        //初始化recyclerView
-        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles, mContext));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLongClickable(true);
-        fileAdapter.setOnItemClickLitener(this);
+//        //初始化recyclerView
+//        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles, mContext));
+//        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        mRecyclerView.setLongClickable(true);
+//        fileAdapter.setOnItemClickLitener(this);
 
     }
 
