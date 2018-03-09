@@ -1,30 +1,18 @@
 package com.lagranmoon.meditor.activity;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.TextView;
 
-import com.bumptech.glide.request.transition.Transition;
+import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.adapter.ViewPagerAdapter;
 import com.lagranmoon.meditor.fragment.Display_fragment_Activity;
 import com.lagranmoon.meditor.fragment.Edit_fragment_Activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class EditActivity extends AppCompatActivity {
+public class EditActivity extends BaseActivity {
 
     private Context context;
     public final String TAG = "EditActivity";

@@ -63,6 +63,9 @@ public class Files {
         this.ifStar = ifStar;
     }
 
+    public Files() {
+    }
+
     @Override
     public String toString() {
         return "Files{" +

@@ -29,7 +29,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
     private boolean requsetDelete = false;
 
     public FileAdapter(List<Files> files, Context context){
-        mInflater = LayoutInflater.from(context);
+//        mInflater = LayoutInflater.from(context);
         this.mcontext = context;
         mFiles = files;
     }
@@ -55,7 +55,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
 
     @Override
     public void onBindViewHolder(final FilesViewHolder holder, int position) {
-        holder.bindHolder(mFiles.get(position));
+        holder.bindHolder(mFiles.get(position), position);
     }
 
     @Override
@@ -85,14 +85,17 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
         TextView fileTime;
         @BindView(R.id.star_Image_View)
         ImageView starFiles;
+        @BindView(R.id.item_number_text_view)
+        TextView fileNumber;
 
         public FilesViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(itemView);
         }
 
-        public void bindHolder(final Files files) {
-            fileTime.setText(files.getTitle());
+        public void bindHolder(final Files files, int position) {
+            fileNumber.setText((position + 1) + "");
+            fileName.setText(files.getTitle());
             fileTime.setText(Units.friendlyTime(files.getDate()));
             if (mOnItemClickLitener != null) {
                 itemView.setOnClickListener(new View.OnClickListener() {
