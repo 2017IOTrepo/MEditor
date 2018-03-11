@@ -1,6 +1,5 @@
 package com.lagranmoon.meditor.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +9,9 @@ import android.widget.TextView;
 
 import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.bean.Files;
-import com.lagranmoon.meditor.util.Units;
+import com.lagranmoon.meditor.util.Unitsutils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,21 +23,19 @@ import butterknife.ButterKnife;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolder> {
 
-    private List<Files> mFiles;
+    private List<Files> mFiles = new ArrayList<>();
     private LayoutInflater mInflater;
-    private Context mcontext;
     private boolean requsetDelete = false;
 
-    public FileAdapter(List<Files> files, Context context){
-//        mInflater = LayoutInflater.from(context);
-        this.mcontext = context;
-        mFiles = files;
+    private OnItemClickLitener mOnItemClickLitener;
+
+    public FileAdapter(List<Files> files){
+        this.mFiles = files;
     }
 
     //加删操作
-    public void addFile(int position, Files files){
-        mFiles.add(position, files);
-        notifyItemInserted(position);
+    public void addFile(List<Files> files){
+        mFiles.addAll(files);
     }
 
     public void removeFile(Files files){
@@ -48,9 +46,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
 
     @Override
     public FilesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.file_part_default, parent, false);
-        FilesViewHolder viewHolder = new FilesViewHolder(view);
-        return viewHolder;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.file_part_default, parent, false);
+        return new FilesViewHolder(view);
     }
 
     @Override
@@ -69,8 +66,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
         void onItemClick(Files files);
         void onItemLongClick(Files files);
     }
-
-    private OnItemClickLitener mOnItemClickLitener;
 
     public void setOnItemClickLitener(OnItemClickLitener mOnItemClickLitener)
     {
@@ -96,7 +91,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
         public void bindHolder(final Files files, int position) {
             fileNumber.setText((position + 1) + "");
             fileName.setText(files.getTitle());
-            fileTime.setText(Units.friendlyTime(files.getDate()));
+            fileTime.setText(Unitsutils.friendlyTime(files.getDate()));
             if (mOnItemClickLitener != null) {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

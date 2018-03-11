@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -27,8 +28,11 @@ import com.lagranmoon.meditor.adapter.FileAdapter;
 import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.bean.Files;
 import com.lagranmoon.meditor.util.ActivityCollector;
+import com.lagranmoon.meditor.util.FileUtils;
 import com.lagranmoon.meditor.util.RequestPermissions;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +53,10 @@ public class MainActivity extends BaseActivity
     private List<Files> mFiles = new ArrayList<>();
     private FileAdapter fileAdapter;
     private Context mContext;
+
+    private File file;
+    private String rootFilePath;
+    private List<Files> filesList = new ArrayList<>();
 
 
     @SuppressLint("ResourceAsColor")
@@ -86,21 +94,18 @@ public class MainActivity extends BaseActivity
             }
         });
 
-        //初始化recyclerView
-        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles, mContext));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLongClickable(true);
-        fileAdapter.setOnItemClickLitener(this);
 
+
+        //权限申请相关
         RequestPermissions.requestPermissions(this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 new RequestPermissions.OnPermissionsRequestListener() {
                     @Override
                     public void onGranted() {
-                        Toast.makeText(MainActivity.this, "权限已同意", Toast.LENGTH_SHORT).show();
+                        mFiles = getAllFiles(rootFilePath);
+                        getFileListSucceed(mFiles);
+                        initRecyclerView(mFiles);
                     }
 
                     @Override
@@ -109,8 +114,14 @@ public class MainActivity extends BaseActivity
                     }
                 });
 
-    }
+        //新建存放markdown文件的文件夹
+        rootFilePath = FileUtils.getRootFolder(mContext);
+        file = new File(rootFilePath + "/MEditor_works");
+        if (!file.exists()){
+            file.mkdir();
+        }
 
+    }
 
     /*
     * 新建文本
@@ -118,8 +129,20 @@ public class MainActivity extends BaseActivity
     * */
     private void creatNote() {
 
+        //按下新建按钮先新建一个文件（类似缓存）
         Intent intent = new Intent(MainActivity.this, EditActivity.class);
         startActivity(intent);
+        File newFile = new File(rootFilePath + "/MEditor_works/will_used.md");
+        try {
+            newFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //打开文件
+        String path = newFile.getPath();
+        intent.setDataAndType(Uri.fromFile(new File(path)), "file");
+        mContext.startActivity(intent);
     }
 
     /*
@@ -185,6 +208,7 @@ public class MainActivity extends BaseActivity
         }else if (searchView != null && searchView.isShown() && IsSearchViewShow){
             searchView.onActionViewCollapsed();
             searchView.setQuery("", false);
+            IsSearchViewShow = false;
         } else {
             super.onBackPressed();
         }
@@ -192,7 +216,61 @@ public class MainActivity extends BaseActivity
 
     }
 
-    private void initFiles() {
+
+    //获取文件
+    private void getFiles() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
+
+    }
+
+    /*
+    * 获取sd卡中的所有.md文件
+    *
+    * */
+    public List<Files> getAllFiles(String FilePath){
+        String fileName;
+        String suf;//文件后缀名
+        File dir = new File(FilePath);
+        File[] files = dir.listFiles();//获取文件夹下的所有文件及文件夹
+
+        if (files == null)
+            return null;
+
+        for (int i = 0; i < files.length; i++) {
+
+            if (files[i].isDirectory()){
+                getAllFiles(files[i].getAbsolutePath());//递归获取下一级文件(夹)
+            }else {
+                //下面为获取文件后缀并存储
+                fileName = files[i].getName();
+                int j = fileName.lastIndexOf(".");
+                suf = fileName.substring(j+1);//.后面即为文件后缀
+
+                if (suf.equalsIgnoreCase("md") || suf.equalsIgnoreCase("mdown")||
+                        suf.equalsIgnoreCase("markdown")){
+                    filesList.add(FileUtils.getFile(files[i]));
+                }
+            }
+
+        }
+        return filesList;
+    }
+
+    //初始化recyclerView
+    private void initRecyclerView(List<Files> mFiles) {
+        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLongClickable(true);
+        fileAdapter.setOnItemClickLitener(this);
+
     }
 
 
@@ -303,7 +381,7 @@ public class MainActivity extends BaseActivity
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        initFiles();
+                        getFiles();
                     }
                 });
             }

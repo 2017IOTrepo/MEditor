@@ -24,7 +24,7 @@ import java.util.Date;
  * 单位转换
  * Created by 沈钦赐 on 16/1/30.
  */
-public class Units {
+public class Unitsutils {
     private final static ThreadLocal<SimpleDateFormat> dateFormater2 = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {

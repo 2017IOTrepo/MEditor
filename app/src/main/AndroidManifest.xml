@@ -30,7 +30,8 @@
             android:label="@string/title_activity_edit_fragment_"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".fragment.Display_fragment_Activity" />
-        <activity android:name=".activity.AboutActivity"></activity>
+        <activity android:name=".activity.AboutActivity" />
+        <activity android:name=".fragment.Content_main_fragment"></activity>
     </application>
 
 </manifest>
