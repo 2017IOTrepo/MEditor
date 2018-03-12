@@ -20,10 +20,10 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activity.EditActivity" />
         <activity
             android:name=".fragment.Edit_fragment_Activity"
@@ -31,7 +31,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".fragment.Display_fragment_Activity" />
         <activity android:name=".activity.AboutActivity" />
-        <activity android:name=".fragment.Content_main_fragment"></activity>
+        <activity android:name=".fragment.Content_main_fragment" />
+        <activity android:name=".activity.SearchResultActivity"></activity>
     </application>
 
 </manifest>

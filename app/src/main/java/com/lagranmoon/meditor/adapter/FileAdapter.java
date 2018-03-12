@@ -14,9 +14,6 @@ import com.lagranmoon.meditor.util.Unitsutils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by 13256 on 2018/3/2.
  */
@@ -73,25 +70,25 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
     }
 
     class FilesViewHolder extends RecyclerView.ViewHolder{
-
-        @BindView(R.id.file_name_text_view)
-        TextView fileName;
-        @BindView(R.id.file_time_text_view)
-        TextView fileTime;
-        @BindView(R.id.star_Image_View)
-        ImageView starFiles;
-        @BindView(R.id.item_number_text_view)
-        TextView fileNumber;
+        private TextView fileName;
+        private TextView fileTime;
+        private TextView fileNumber;
+        private ImageView starFiles;
 
         public FilesViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(itemView);
+            fileName = itemView.findViewById(R.id.file_name_text_view);
+            fileTime = itemView.findViewById(R.id.file_time_text_view);
+            fileNumber = itemView.findViewById(R.id.item_number_text_view);
+            starFiles = itemView.findViewById(R.id.star_Image_View);
         }
 
         public void bindHolder(final Files files, int position) {
             fileNumber.setText((position + 1) + "");
             fileName.setText(files.getTitle());
             fileTime.setText(Unitsutils.friendlyTime(files.getDate()));
+            if (!files.isIfStar())
+                starFiles.setVisibility(View.GONE);
             if (mOnItemClickLitener != null) {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <item android:title="functions">
         <item
             android:id="@+id/nightTheme"
             android:icon="@drawable/night_mode_icon"
@@ -17,7 +17,7 @@
             android:id="@+id/diaryUI"
             android:icon="@drawable/ic_launcher_background"
             android:title="@string/diaryui" />
-    </group>
+    </item>
 
     <item android:title="Communicate">
         <menu>

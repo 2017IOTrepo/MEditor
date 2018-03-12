@@ -24,6 +24,7 @@ public class FileUtils {
     //将File转化为Files类
     public static Files getFile(File file){
         Files files = new Files();
+        files.setTitle(file.getName());
         files.setPath(file.getAbsolutePath());
         files.setDate(new Date(file.lastModified()));
 

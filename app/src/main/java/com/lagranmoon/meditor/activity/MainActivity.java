@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lagranmoon.meditor.R;
@@ -36,13 +39,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, FileAdapter.OnItemClickLitener {
 
-    @BindView(R.id.empty_content)
-    protected View emptyContent;
+    private TextView emptyContent;
 
     private SearchView searchView;
     private boolean IsSearchViewShow = false;
@@ -57,6 +57,8 @@ public class MainActivity extends BaseActivity
     private File file;
     private String rootFilePath;
     private List<Files> filesList = new ArrayList<>();
+
+    private long customTime = 0;
 
 
     @SuppressLint("ResourceAsColor")
@@ -90,7 +92,12 @@ public class MainActivity extends BaseActivity
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshFiles();
+
+                mFiles = getAllFiles(rootFilePath);
+                initRecyclerView(mFiles);
+                getFileListSucceed(mFiles);
+                finshRefresh();
+
             }
         });
 
@@ -103,6 +110,7 @@ public class MainActivity extends BaseActivity
                 new RequestPermissions.OnPermissionsRequestListener() {
                     @Override
                     public void onGranted() {
+                        rootFilePath = FileUtils.getRootFolder(mContext);
                         mFiles = getAllFiles(rootFilePath);
                         getFileListSucceed(mFiles);
                         initRecyclerView(mFiles);
@@ -115,7 +123,6 @@ public class MainActivity extends BaseActivity
                 });
 
         //新建存放markdown文件的文件夹
-        rootFilePath = FileUtils.getRootFolder(mContext);
         file = new File(rootFilePath + "/MEditor_works");
         if (!file.exists()){
             file.mkdir();
@@ -150,8 +157,8 @@ public class MainActivity extends BaseActivity
     *
     * */
     public void getFileListSucceed(List<Files> files){
-        fileAdapter.notifyDataSetChanged();
 
+        emptyContent = (TextView)findViewById(R.id.empty_content);
         if (files.isEmpty()){
             emptyContent.setVisibility(View.VISIBLE);
         }else {
@@ -176,27 +183,6 @@ public class MainActivity extends BaseActivity
     }
 
     /*
-    * 开始刷新
-    *
-    * */
-    public void refresh(){
-        if (mSwipeRefreshLayout.isRefreshing()){
-            return;
-        }
-
-        mSwipeRefreshLayout.setRefreshing(true);
-        onRefreshFiles();
-        return;
-    }
-
-    /*
-    * 刷新文件
-    *
-    * */
-    private void onRefreshFiles() {
-    }
-
-    /*
     * 返回键逻辑
     *
     * */
@@ -210,28 +196,21 @@ public class MainActivity extends BaseActivity
             searchView.setQuery("", false);
             IsSearchViewShow = false;
         } else {
-            super.onBackPressed();
+            //没有东西可以返回了，剩下软件退出逻辑
+            if (Math.abs(customTime - System.currentTimeMillis()) < 2000) {
+                finish();
+            } else {// 提示用户退出
+                customTime = System.currentTimeMillis();
+                Toast.makeText(MainActivity.this, "再按一次退出软件", Toast.LENGTH_SHORT).show();
+            }
         }
 
 
     }
 
-
-    //获取文件
-    private void getFiles() {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
-
-    }
-
     /*
     * 获取sd卡中的所有.md文件
-    *
+    * 利用递归
     * */
     public List<Files> getAllFiles(String FilePath){
         String fileName;
@@ -270,7 +249,6 @@ public class MainActivity extends BaseActivity
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLongClickable(true);
         fileAdapter.setOnItemClickLitener(this);
-
     }
 
 
@@ -326,9 +304,6 @@ public class MainActivity extends BaseActivity
         switch (id){
             case R.id.action_settings:
                 break;
-
-            case R.id.star_files_item:
-                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -348,7 +323,7 @@ public class MainActivity extends BaseActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                return true;
             }
 
             @Override
@@ -366,35 +341,40 @@ public class MainActivity extends BaseActivity
         });
     }
 
-    private void refreshFiles() {
-
-        //刷新搜索文件逻辑
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getFiles();
-                    }
-                });
-            }
-        });
-    }
-
     @Override
     public void onItemClick(Files files) {
 
     }
 
     @Override
-    public void onItemLongClick(Files files) {
+    public void onItemLongClick(final Files files) {
 
+        final String[] choice = new String[]{"加入星标文件", "删除"};
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setItems(choice, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (choice[i]){
+
+                            case "加入星标文件":
+                                files.setIfStar(true);
+                                initRecyclerView(mFiles);
+                                Toast.makeText(MainActivity.this, "成功加入星标文件", Toast.LENGTH_SHORT).show();
+                                break;
+
+                            case "删除":
+                                new File(files.getPath()).delete();
+                                mFiles.remove(files);
+                                initRecyclerView(mFiles);
+                                getFileListSucceed(mFiles);
+                                Toast.makeText(MainActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                                break;
+
+                        }
+
+                    }
+                })
+                .show();
     }
 }
