@@ -5,11 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -42,6 +41,7 @@ import java.util.List;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, FileAdapter.OnItemClickLitener {
 
+    private NavigationView navigationView;
     private TextView emptyContent;
 
     private SearchView searchView;
@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refres);
@@ -92,7 +92,7 @@ public class MainActivity extends BaseActivity
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                mFiles.clear();
                 mFiles = getAllFiles(rootFilePath);
                 initRecyclerView(mFiles);
                 getFileListSucceed(mFiles);
@@ -137,26 +137,41 @@ public class MainActivity extends BaseActivity
     private void creatNote() {
 
         //按下新建按钮先新建一个文件（类似缓存）
-        Intent intent = new Intent(MainActivity.this, EditActivity.class);
-        startActivity(intent);
-        File newFile = new File(rootFilePath + "/MEditor_works/will_used.md");
-        try {
-            newFile.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+        //新建文件 不用判断是Edit_mode中的EditView否为空
+        File newFile = new File(rootFilePath + "/MEditor_works/new_note.md");
+
+        for (int i = 2; newFile.exists() ; i++) {
+
+            if(!newFile.exists()) {
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }else{
+                newFile = new File(rootFilePath + "/MEditor_works/new_note" + i + ".md");
+            }
+
         }
 
+        openFiles(FileUtils.getFile(newFile));
+    }
+
+    private void openFiles(Files files){
+
         //打开文件
-        String path = newFile.getPath();
-        intent.setDataAndType(Uri.fromFile(new File(path)), "file");
-        mContext.startActivity(intent);
+        //String path = newFile.getPath();
+        //intent.setDataAndType(Uri.fromFile(new File(path)), "file");
+        EditActivity.startActivity(MainActivity.this);
+
     }
 
     /*
     * 列表获取完成
     *
     * */
-    public void getFileListSucceed(List<Files> files){
+    private void getFileListSucceed(List<Files> files){
 
         emptyContent = (TextView)findViewById(R.id.empty_content);
         if (files.isEmpty()){
@@ -196,13 +211,15 @@ public class MainActivity extends BaseActivity
             searchView.setQuery("", false);
             IsSearchViewShow = false;
         } else {
-            //没有东西可以返回了，剩下软件退出逻辑
+
+            //软件退出逻辑
             if (Math.abs(customTime - System.currentTimeMillis()) < 2000) {
                 finish();
             } else {// 提示用户退出
                 customTime = System.currentTimeMillis();
-                Toast.makeText(MainActivity.this, "再按一次退出软件", Toast.LENGTH_SHORT).show();
+                Snackbar.make(navigationView, "再按一次返回键退出", Snackbar.LENGTH_SHORT).show();
             }
+
         }
 
 
@@ -212,7 +229,7 @@ public class MainActivity extends BaseActivity
     * 获取sd卡中的所有.md文件
     * 利用递归
     * */
-    public List<Files> getAllFiles(String FilePath){
+    private List<Files> getAllFiles(String FilePath){
         String fileName;
         String suf;//文件后缀名
         File dir = new File(FilePath);
@@ -343,7 +360,6 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onItemClick(Files files) {
-
     }
 
     @Override

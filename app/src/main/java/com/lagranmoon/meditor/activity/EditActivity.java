@@ -1,14 +1,15 @@
 package com.lagranmoon.meditor.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.adapter.ViewPagerAdapter;
+import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.fragment.Display_fragment_Activity;
 import com.lagranmoon.meditor.fragment.Edit_fragment_Activity;
 
@@ -73,4 +74,10 @@ public class EditActivity extends BaseActivity {
 
     }
 
+
+
+    public static void startActivity(Context context){
+        Intent intent = new Intent(context, EditActivity.class);
+        context.startActivity(intent);
+    }
 }

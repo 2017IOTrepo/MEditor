@@ -31,10 +31,6 @@ public class FileUtils {
         return files;
     }
 
-    public static File getFile(@NonNull Files files){
-        return new File(files.getPath());
-    }
-
     /**
      * 照顾旧机型
      *
