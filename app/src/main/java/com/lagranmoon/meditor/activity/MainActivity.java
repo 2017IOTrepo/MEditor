@@ -108,6 +108,7 @@ public class MainActivity extends BaseActivity
                     public void onGranted() {
                         rootFilePath = FileUtils.getRootFolder(mContext);
                         loadFileList();
+                        initRecyclerView();
                     }
 
                     @Override
@@ -141,13 +142,12 @@ public class MainActivity extends BaseActivity
             @Override
             public void run() {
                 mFiles = getAllFiles(rootFilePath);
-                getFileListSucceed(mFiles);
-                initRecyclerView(mFiles);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         fileAdapter.addFile(mFiles);
+                        getFileListSucceed();
                     }
                 });
             }
@@ -195,10 +195,10 @@ public class MainActivity extends BaseActivity
     * 列表获取完成
     *
     * */
-    private void getFileListSucceed(List<Files> files){
+    private void getFileListSucceed(){
 
         emptyContent = (TextView)findViewById(R.id.empty_content);
-        if (files.isEmpty()){
+        if (mFiles.isEmpty()){
             emptyContent.setVisibility(View.VISIBLE);
         }else {
             emptyContent.setVisibility(View.GONE);
@@ -283,7 +283,7 @@ public class MainActivity extends BaseActivity
     }
 
     //初始化recyclerView
-    private void initRecyclerView(List<Files> mFiles) {
+    private void initRecyclerView() {
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles));
@@ -399,15 +399,15 @@ public class MainActivity extends BaseActivity
 
                             case "加入星标文件":
                                 files.setIfStar(true);
-                                initRecyclerView(mFiles);
+                                initRecyclerView();
                                 Toast.makeText(MainActivity.this, "成功加入星标文件", Toast.LENGTH_SHORT).show();
                                 break;
 
                             case "删除":
                                 new File(files.getPath()).delete();
                                 mFiles.remove(files);
-                                initRecyclerView(mFiles);
-                                getFileListSucceed(mFiles);
+                                initRecyclerView();
+                                getFileListSucceed();
                                 Toast.makeText(MainActivity.this, "已删除", Toast.LENGTH_SHORT).show();
                                 break;
 
