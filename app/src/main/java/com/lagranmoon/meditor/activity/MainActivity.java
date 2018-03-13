@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -41,6 +42,7 @@ import java.util.List;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, FileAdapter.OnItemClickLitener {
 
+    private Toolbar toolbar;
     private NavigationView navigationView;
     private TextView emptyContent;
 
@@ -60,13 +62,12 @@ public class MainActivity extends BaseActivity
 
     private long customTime = 0;
 
-
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton add_button = (FloatingActionButton) findViewById(R.id.add_button_in_mainactivity);
@@ -93,15 +94,10 @@ public class MainActivity extends BaseActivity
             @Override
             public void onRefresh() {
                 mFiles.clear();
-                mFiles = getAllFiles(rootFilePath);
-                initRecyclerView(mFiles);
-                getFileListSucceed(mFiles);
+                loadFileList();
                 finshRefresh();
-
             }
         });
-
-
 
         //权限申请相关
         RequestPermissions.requestPermissions(this,
@@ -111,9 +107,7 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onGranted() {
                         rootFilePath = FileUtils.getRootFolder(mContext);
-                        mFiles = getAllFiles(rootFilePath);
-                        getFileListSucceed(mFiles);
-                        initRecyclerView(mFiles);
+                        loadFileList();
                     }
 
                     @Override
@@ -128,6 +122,36 @@ public class MainActivity extends BaseActivity
             file.mkdir();
         }
 
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        mFiles.clear();
+        loadFileList();
+    }
+
+    /*
+    * 在子线程读取文件
+    *
+    * */
+    private void loadFileList(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mFiles = getAllFiles(rootFilePath);
+                getFileListSucceed(mFiles);
+                initRecyclerView(mFiles);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        fileAdapter.addFile(mFiles);
+                    }
+                });
+            }
+        }).start();
     }
 
     /*
@@ -217,7 +241,7 @@ public class MainActivity extends BaseActivity
                 finish();
             } else {// 提示用户退出
                 customTime = System.currentTimeMillis();
-                Snackbar.make(navigationView, "再按一次返回键退出", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(toolbar, "再按一次返回键退出", Snackbar.LENGTH_SHORT).show();
             }
 
         }
@@ -309,29 +333,15 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         //使用菜单填充器获取menu下的菜单
         getMenuInflater().inflate(R.menu.menu_in_main_activity, menu);
-        initSearchView(menu);
+        SearchViewUsing(menu);
         return super.onCreateOptionsMenu(menu);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id){
-            case R.id.action_settings:
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     /*
     * 搜索逻辑
     *
     * */
-    private void initSearchView(Menu menu) {
+    private void SearchViewUsing(Menu menu) {
 
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView)menu.findItem(R.id.search_item).getActionView();
@@ -340,6 +350,11 @@ public class MainActivity extends BaseActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                if (!FileUtils.isEmpty(query)){
+                    Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
+
+                }
+                searchView.setIconified(false);
                 return true;
             }
 
@@ -358,10 +373,19 @@ public class MainActivity extends BaseActivity
         });
     }
 
+    /*
+    * 文件短按逻辑
+    *
+    * */
     @Override
     public void onItemClick(Files files) {
+        openFiles(files);
     }
 
+    /*
+    * 文件长按逻辑
+    *
+    * */
     @Override
     public void onItemLongClick(final Files files) {
 
