@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -20,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +48,7 @@ public class MainActivity extends BaseActivity
 
     private SearchView searchView;
     private boolean IsSearchViewShow = false;
+    private List<Files> SearchResultFilesList = null;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -88,7 +89,7 @@ public class MainActivity extends BaseActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refres);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refres);
         mSwipeRefreshLayout.setColorSchemeColors(R.color.colorDefault);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -108,7 +109,6 @@ public class MainActivity extends BaseActivity
                     public void onGranted() {
                         rootFilePath = FileUtils.getRootFolder(mContext);
                         loadFileList();
-                        initRecyclerView();
                     }
 
                     @Override
@@ -119,7 +119,7 @@ public class MainActivity extends BaseActivity
 
         //新建存放markdown文件的文件夹
         file = new File(rootFilePath + "/MEditor_works");
-        if (!file.exists()){
+        if (!file.exists()) {
             file.mkdir();
         }
 
@@ -134,27 +134,6 @@ public class MainActivity extends BaseActivity
     }
 
     /*
-    * 在子线程读取文件
-    *
-    * */
-    private void loadFileList(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mFiles = getAllFiles(rootFilePath);
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        fileAdapter.addFile(mFiles);
-                        getFileListSucceed();
-                    }
-                });
-            }
-        }).start();
-    }
-
-    /*
     * 新建文本
     *
     * */
@@ -164,43 +143,42 @@ public class MainActivity extends BaseActivity
         //新建文件 不用判断是Edit_mode中的EditView否为空
         File newFile = new File(rootFilePath + "/MEditor_works/new_note.md");
 
-        for (int i = 2; newFile.exists() ; i++) {
+        for (int i = 2; newFile.exists(); i++) {
 
-            if(!newFile.exists()) {
+            if (!newFile.exists()) {
                 try {
                     file.createNewFile();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            }else{
+            } else {
                 newFile = new File(rootFilePath + "/MEditor_works/new_note" + i + ".md");
             }
 
         }
 
-        openFiles(FileUtils.getFile(newFile));
+        FileUtils.openFiles(FileUtils.getFile(newFile), MainActivity.this);
     }
 
-    private void openFiles(Files files){
-
-        //打开文件
-        //String path = newFile.getPath();
-        //intent.setDataAndType(Uri.fromFile(new File(path)), "file");
-        EditActivity.startActivity(MainActivity.this);
-
+    /*
+    * 在子线程读取文件
+    *
+    * */
+    private void loadFileList() {
+        mFiles = getAllFiles(rootFilePath + "/MEditor_works");
+        getFileListSucceed();
+        initRecyclerView(mFiles);
     }
 
     /*
     * 列表获取完成
     *
     * */
-    private void getFileListSucceed(){
-
-        emptyContent = (TextView)findViewById(R.id.empty_content);
-        if (mFiles.isEmpty()){
+    private void getFileListSucceed() {
+        emptyContent = (TextView) findViewById(R.id.empty_content);
+        if (mFiles.isEmpty()) {
             emptyContent.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             emptyContent.setVisibility(View.GONE);
         }
 
@@ -213,7 +191,7 @@ public class MainActivity extends BaseActivity
     * */
     private void finshRefresh() {
 
-        if (!mSwipeRefreshLayout.isRefreshing()){
+        if (!mSwipeRefreshLayout.isRefreshing()) {
             return;
         }
 
@@ -230,10 +208,11 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else if (searchView != null && searchView.isShown() && IsSearchViewShow){
+        } else if (searchView != null && searchView.isShown() && IsSearchViewShow) {
             searchView.onActionViewCollapsed();
             searchView.setQuery("", false);
             IsSearchViewShow = false;
+            initRecyclerView(mFiles);
         } else {
 
             //软件退出逻辑
@@ -250,10 +229,12 @@ public class MainActivity extends BaseActivity
     }
 
     /*
-    * 获取sd卡中的所有.md文件
+    * 获取sd卡中的所有.md文件(废弃)
+    *
+    * 因有bug所以改为指定文件夹内文件
     * 利用递归
     * */
-    private List<Files> getAllFiles(String FilePath){
+    private List<Files> getAllFiles(String FilePath) {
         String fileName;
         String suf;//文件后缀名
         File dir = new File(FilePath);
@@ -264,17 +245,18 @@ public class MainActivity extends BaseActivity
 
         for (int i = 0; i < files.length; i++) {
 
-            if (files[i].isDirectory()){
+            if (files[i].isDirectory()) {
                 getAllFiles(files[i].getAbsolutePath());//递归获取下一级文件(夹)
-            }else {
+            } else {
                 //下面为获取文件后缀并存储
                 fileName = files[i].getName();
                 int j = fileName.lastIndexOf(".");
-                suf = fileName.substring(j+1);//.后面即为文件后缀
+                suf = fileName.substring(j + 1);//.后面即为文件后缀
 
-                if (suf.equalsIgnoreCase("md") || suf.equalsIgnoreCase("mdown")||
-                        suf.equalsIgnoreCase("markdown")){
+                if (suf.equalsIgnoreCase("md") || suf.equalsIgnoreCase("mdown") ||
+                        suf.equalsIgnoreCase("markdown")) {
                     filesList.add(FileUtils.getFile(files[i]));
+                    Log.d("FileName", files[i].getName());
                 }
             }
 
@@ -283,8 +265,8 @@ public class MainActivity extends BaseActivity
     }
 
     //初始化recyclerView
-    private void initRecyclerView() {
-        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+    private void initRecyclerView(List<Files> mFiles) {
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -309,13 +291,13 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.action_settings) {
             Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
-        } else if (id == R.id.diaryUI){
+        } else if (id == R.id.diaryUI) {
             Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_share) {
             Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
-        }else if (id == R.id.nav_about){
+        } else if (id == R.id.nav_about) {
             AboutActivity.startActivity(MainActivity.this);
         }
 
@@ -343,16 +325,23 @@ public class MainActivity extends BaseActivity
     * */
     private void SearchViewUsing(Menu menu) {
 
-        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView)menu.findItem(R.id.search_item).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.search_item).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (!FileUtils.isEmpty(query)){
-                    Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
+                if (!FileUtils.isEmpty(query)) {
+                    SearchResultFilesList = new ArrayList<>();
 
+                    //文件搜索逻辑
+                    for (Files containFile:
+                            mFiles) {
+                        if (containFile.getTitle().contains(query))
+                            SearchResultFilesList.add(containFile);
+                    }
+                    initRecyclerView(SearchResultFilesList);
                 }
                 searchView.setIconified(false);
                 return true;
@@ -379,7 +368,7 @@ public class MainActivity extends BaseActivity
     * */
     @Override
     public void onItemClick(Files files) {
-        openFiles(files);
+        FileUtils.openFiles(files, MainActivity.this);
     }
 
     /*
@@ -388,27 +377,42 @@ public class MainActivity extends BaseActivity
     * */
     @Override
     public void onItemLongClick(final Files files) {
+        String[] choice = null;
 
-        final String[] choice = new String[]{"加入星标文件", "删除"};
+        if (!files.isIfStar()) {
+           choice =  new String[]{"加入星标", "删除"};
+           showDialogs(files, choice, "成功标记星标", "已删除");
+        }else {
+            choice = new String[]{"去除星标", "删除"};
+            showDialogs(files, choice, "成功去除星标", "已删除");
+        }
+
+    }
+
+    private void showDialogs(final Files files, final String[] choice, final String firstToast, final String secondToast) {
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setItems(choice, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (choice[i]){
+                        switch (i) {
 
-                            case "加入星标文件":
-                                files.setIfStar(true);
-                                initRecyclerView();
-                                Toast.makeText(MainActivity.this, "成功加入星标文件", Toast.LENGTH_SHORT).show();
+                            case 0:
+                                if (!files.isIfStar()){
+                                    files.setIfStar(true);
+                                }else {
+                                    files.setIfStar(false);
+                                }
+                                initRecyclerView(mFiles);
+                                Toast.makeText(MainActivity.this, firstToast, Toast.LENGTH_SHORT).show();
                                 break;
 
-                            case "删除":
+                            case 1:
                                 new File(files.getPath()).delete();
                                 mFiles.remove(files);
-                                initRecyclerView();
+                                initRecyclerView(mFiles);
                                 getFileListSucceed();
-                                Toast.makeText(MainActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, secondToast, Toast.LENGTH_SHORT).show();
                                 break;
 
                         }
@@ -416,5 +420,8 @@ public class MainActivity extends BaseActivity
                     }
                 })
                 .show();
+
     }
+
 }
+

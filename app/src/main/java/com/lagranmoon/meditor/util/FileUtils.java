@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
+import com.lagranmoon.meditor.activity.EditActivity;
 import com.lagranmoon.meditor.bean.Files;
 
 import java.io.File;
@@ -71,5 +72,14 @@ public class FileUtils {
             }
         }
         return true;
+    }
+
+    public static void openFiles(Files files, Context context) {
+
+        //打开文件
+        //String path = newFile.getPath();
+        //intent.setDataAndType(Uri.fromFile(new File(path)), "file");
+        EditActivity.startActivity(context);
+
     }
 }
