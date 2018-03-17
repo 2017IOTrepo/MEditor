@@ -41,6 +41,10 @@ public class EditActivity extends BaseActivity {
         fileName = getIntent().getStringExtra("fileName");
         edit_fragment_activity = Edit_fragment_Activity.getInstance(filePath);
 
+        Bundle bundle = new Bundle();
+        bundle.putString("fileName", fileName);
+        edit_fragment_activity.setArguments(bundle);
+
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
     }

@@ -1,5 +1,6 @@
 package com.lagranmoon.meditor.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,15 +30,13 @@ public class Edit_fragment_Activity extends Fragment {
     private CompositeSubscription mCompositeSubscription;
 
 
-    public static Edit_fragment_Activity getInstance(String filePath, String fileName){
+    public static Edit_fragment_Activity getInstance(String filePath){
 
         Bundle bundle = new Bundle();
         Edit_fragment_Activity edit_fragment_activity
                 = new Edit_fragment_Activity();
         bundle.putString(FILE_PATH_KEY, filePath);
         edit_fragment_activity.setArguments(bundle);
-
-        
         return edit_fragment_activity;
     }
 
@@ -49,8 +48,6 @@ public class Edit_fragment_Activity extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Title = view.findViewById(R.id.edit_title_text);
-        Context = view.findViewById(R.id.edit_content_text);
         loadFile();
 
 //        Bundle arguments = getArguments();
@@ -60,10 +57,10 @@ public class Edit_fragment_Activity extends Fragment {
     }
 
     /*
-    * 加载文件
-    *
-    * 来源网络 作者:qinc
-    * */
+        * 加载文件
+        *
+        * 来源网络 作者:qinc
+        * */
     private void loadFile() {
         //mCompositeSubscription.add();
     }
@@ -71,7 +68,17 @@ public class Edit_fragment_Activity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.edit_fragment_activity, container, false);
+        View view = inflater.inflate(R.layout.edit_fragment_activity, container, false);;
+
+        Title = view.findViewById(R.id.edit_title_text);
+        Context = view.findViewById(R.id.edit_content_text);
+
+        Bundle bundle = getArguments();
+        fileName = bundle.getString("fileName");
+
+        Title.setText(fileName);
+
+        return view;
     }
 
 }
