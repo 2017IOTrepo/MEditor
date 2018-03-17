@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -167,27 +169,12 @@ public class MainActivity extends BaseActivity
     *
     * */
     private void creatNote() {
-
-        //按下新建按钮先新建一个文件（类似缓存）
-        //新建文件 不用判断是Edit_mode中的EditView否为空
-        File newFile = new File(rootFilePath + "/MEditor_works/new_note.md");
-
-        for (int i = 2; newFile.exists(); i++) {
-
-            if (!newFile.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                newFile = new File(rootFilePath + "/MEditor_works/new_note" + i + ".md");
-            }
-
-        }
-
-        FileUtils.openFiles(FileUtils.getFile(newFile), MainActivity.this);
-    }
+        mContext = MainActivity.this;
+        Intent intent = new Intent(mContext, EditActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file), "file");
+        mContext.startActivity(intent);
+   }
 
     /*
     * 读取文件
@@ -452,7 +439,7 @@ public class MainActivity extends BaseActivity
                                 break;
 
                             case 2:
-                                FileUtils.shareFiles(files);
+                                FileUtils.shareFiles(new File(files.getPath(), files.getTitle()), MainActivity.this);
                                 break;
                         }
 

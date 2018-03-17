@@ -15,12 +15,15 @@ import com.lagranmoon.meditor.fragment.Display_fragment_Activity;
 import com.lagranmoon.meditor.fragment.Edit_fragment_Activity;
 import com.lagranmoon.meditor.util.FileUtils;
 
+import java.io.File;
+
 public class EditActivity extends BaseActivity {
 
     private Context context;
     public final String TAG = "EditActivity";
     public final int EDIT_MODE = 0;
     public final int DISPLAY_MODE = 1;
+    private Intent intent;
 
     private ViewPager mViewPager;//滑动效果
 
@@ -28,6 +31,7 @@ public class EditActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_activity);
+        intent = getIntent();
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
@@ -55,7 +59,9 @@ public class EditActivity extends BaseActivity {
                 break;
 
             case R.id.share_item:
-                FileUtils.shareFiles();
+                FileUtils.shareFiles(new
+                        File(intent.getStringExtra("FilePath"),
+                        intent.getStringExtra("FileName")), EditActivity.this);
                 break;
 
             case R.id.open_item:
@@ -82,10 +88,4 @@ public class EditActivity extends BaseActivity {
 
     }
 
-
-
-    public static void startActivity(Context context){
-        Intent intent = new Intent(context, EditActivity.class);
-        context.startActivity(intent);
-    }
 }

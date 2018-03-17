@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.lagranmoon.meditor.activity.EditActivity;
+import com.lagranmoon.meditor.activity.MainActivity;
 import com.lagranmoon.meditor.bean.Files;
 
 import java.io.File;
@@ -81,21 +83,18 @@ public class FileUtils {
         //打开文件
         //String path = newFile.getPath();
         //intent.setDataAndType(Uri.fromFile(new File(path)), "file");
-        EditActivity.startActivity(context);
-
+        Intent intent = new Intent(context, EditActivity.class);
+        intent.putExtra("FilePath", files.getPath());
+        intent.putExtra("FileName", files.getTitle());
+        context.startActivity(intent);
     }
 
     /*
     * 分享文件
     *
+    * 未完成 bug有点多。。。。
     * */
-    public static void shareFiles(Files files){
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new
-                File(files.getPath(), files.getTitle())));
-        shareIntent.setType("*/*");
-
-        //BottomSheet.Builder
-
+    public static void shareFiles(File file, Context mContext){
+        Toast.makeText(mContext, "bug原因放置", Toast.LENGTH_SHORT).show();
     }
 }
