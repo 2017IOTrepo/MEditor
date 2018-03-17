@@ -5,7 +5,10 @@ import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -45,6 +48,7 @@ public class MainActivity extends BaseActivity
     private Toolbar toolbar;
     private NavigationView navigationView;
     private TextView emptyContent;
+    private boolean ifPortrait = false;
 
     private SearchView searchView;
     private boolean IsSearchViewShow = false;
@@ -54,8 +58,14 @@ public class MainActivity extends BaseActivity
 
     private RecyclerView mRecyclerView;
     private List<Files> mFiles = new ArrayList<>();
+    private Files tempFiles;
     private FileAdapter fileAdapter;
     private Context mContext;
+    private SharedPreferences portrait_Pref;
+    private SharedPreferences.Editor portrait_editor;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
+    private boolean ifStar = false;
 
     private File file;
     private String rootFilePath;
@@ -100,6 +110,7 @@ public class MainActivity extends BaseActivity
             }
         });
 
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
         //权限申请相关
         RequestPermissions.requestPermissions(this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -108,6 +119,7 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onGranted() {
                         rootFilePath = FileUtils.getRootFolder(mContext);
+                        editor = pref.edit();
                         loadFileList();
                     }
 
@@ -123,14 +135,31 @@ public class MainActivity extends BaseActivity
             file.mkdir();
         }
 
+        //portrait_editor = getSharedPreferences("properties", MODE_PRIVATE).edit();
+        portrait_Pref = getSharedPreferences("properties", MODE_PRIVATE);
+        ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
 
-        mFiles.clear();
-        loadFileList();
+        if (!(searchView != null && searchView.isShown() && IsSearchViewShow)){
+            mFiles.clear();
+            loadFileList();
+        }
+
+        ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
+
+    }
+
+    @Override
+    protected void onResume() {
+        if ((getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) && ifPortrait){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        super.onResume();
     }
 
     /*
@@ -161,7 +190,7 @@ public class MainActivity extends BaseActivity
     }
 
     /*
-    * 在子线程读取文件
+    * 读取文件
     *
     * */
     private void loadFileList() {
@@ -255,7 +284,12 @@ public class MainActivity extends BaseActivity
 
                 if (suf.equalsIgnoreCase("md") || suf.equalsIgnoreCase("mdown") ||
                         suf.equalsIgnoreCase("markdown")) {
-                    filesList.add(FileUtils.getFile(files[i]));
+                    tempFiles = FileUtils.getFile(files[i]);
+                    filesList.add(tempFiles);
+                    if (pref.contains(tempFiles.getTitle()))
+                        tempFiles.setIfStar(pref.getBoolean(tempFiles.getTitle(), ifStar));//ifStar为未检索到返回的默认值(false)
+
+
                     Log.d("FileName", files[i].getName());
                 }
             }
@@ -289,12 +323,8 @@ public class MainActivity extends BaseActivity
             Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.action_settings) {
-            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
-
+            SettingsActivity.startActivity(MainActivity.this);
         } else if (id == R.id.diaryUI) {
-            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
-
-        } else if (id == R.id.nav_share) {
             Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_about) {
@@ -341,7 +371,10 @@ public class MainActivity extends BaseActivity
                         if (containFile.getTitle().contains(query))
                             SearchResultFilesList.add(containFile);
                     }
+                    getFileListSucceed();
                     initRecyclerView(SearchResultFilesList);
+                }else if (query == ""){
+                    initRecyclerView(mFiles);
                 }
                 searchView.setIconified(false);
                 return true;
@@ -380,16 +413,16 @@ public class MainActivity extends BaseActivity
         String[] choice = null;
 
         if (!files.isIfStar()) {
-           choice =  new String[]{"加入星标", "删除"};
-           showDialogs(files, choice, "成功标记星标", "已删除");
+            choice =  new String[]{"加入星标", "删除", "分享"};
+            showDialogs(files, choice, "成功标记星标", "已删除", true);
         }else {
-            choice = new String[]{"去除星标", "删除"};
-            showDialogs(files, choice, "成功去除星标", "已删除");
+            choice = new String[]{"去除星标", "删除", "分享"};
+            showDialogs(files, choice, "成功去除星标", "已删除", false);
         }
 
     }
 
-    private void showDialogs(final Files files, final String[] choice, final String firstToast, final String secondToast) {
+    private void showDialogs(final Files files, final String[] choice, final String firstToast, final String secondToast, final boolean ifStar) {
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setItems(choice, new DialogInterface.OnClickListener() {
@@ -398,11 +431,14 @@ public class MainActivity extends BaseActivity
                         switch (i) {
 
                             case 0:
-                                if (!files.isIfStar()){
-                                    files.setIfStar(true);
-                                }else {
-                                    files.setIfStar(false);
+                                if (ifStar){
+                                    editor.putBoolean(files.getTitle(), ifStar);
+                                    editor.apply();
+                                }else{
+                                    editor.remove(files.getTitle());
+                                    editor.apply();
                                 }
+                                files.setIfStar(ifStar);
                                 initRecyclerView(mFiles);
                                 Toast.makeText(MainActivity.this, firstToast, Toast.LENGTH_SHORT).show();
                                 break;
@@ -415,6 +451,9 @@ public class MainActivity extends BaseActivity
                                 Toast.makeText(MainActivity.this, secondToast, Toast.LENGTH_SHORT).show();
                                 break;
 
+                            case 2:
+                                FileUtils.shareFiles(files);
+                                break;
                         }
 
                     }
@@ -422,6 +461,7 @@ public class MainActivity extends BaseActivity
                 .show();
 
     }
+
 
 }
 

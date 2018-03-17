@@ -4,28 +4,25 @@
     tools:showIn="navigation_view">
 
     <item android:title="functions">
-        <item
-            android:id="@+id/nightTheme"
-            android:icon="@drawable/night_mode_icon"
-            android:title="@string/Dark" />
+        <menu>
+            <item
+                android:id="@+id/nightTheme"
+                android:icon="@drawable/night_mode_icon"
+                android:title="@string/Dark" />
 
-        <item
-            android:id="@+id/action_settings"
-            android:icon="@drawable/ic_settings_black_18dp"
-            android:title="@string/action_settings" />
-        <item
-            android:id="@+id/diaryUI"
-            android:icon="@drawable/ic_launcher_background"
-            android:title="@string/diaryui" />
+            <item
+                android:id="@+id/action_settings"
+                android:icon="@drawable/ic_settings_black_18dp"
+                android:title="@string/action_settings" />
+            <item
+                android:id="@+id/diaryUI"
+                android:icon="@drawable/ic_launcher_background"
+                android:title="@string/diaryui" />
+        </menu>
     </item>
 
     <item android:title="Communicate">
         <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_share_36pt_2x"
-                android:title="@string/Share" />
-
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_information"

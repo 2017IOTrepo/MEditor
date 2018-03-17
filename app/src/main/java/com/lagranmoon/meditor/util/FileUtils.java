@@ -1,6 +1,8 @@
 package com.lagranmoon.meditor.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
@@ -80,6 +82,20 @@ public class FileUtils {
         //String path = newFile.getPath();
         //intent.setDataAndType(Uri.fromFile(new File(path)), "file");
         EditActivity.startActivity(context);
+
+    }
+
+    /*
+    * 分享文件
+    *
+    * */
+    public static void shareFiles(Files files){
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new
+                File(files.getPath(), files.getTitle())));
+        shareIntent.setType("*/*");
+
+        //BottomSheet.Builder
 
     }
 }

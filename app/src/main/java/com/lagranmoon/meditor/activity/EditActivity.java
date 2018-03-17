@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.adapter.ViewPagerAdapter;
 import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.fragment.Display_fragment_Activity;
 import com.lagranmoon.meditor.fragment.Edit_fragment_Activity;
+import com.lagranmoon.meditor.util.FileUtils;
 
 public class EditActivity extends BaseActivity {
 
@@ -52,10 +54,16 @@ public class EditActivity extends BaseActivity {
             case R.id.regain_item:
                 break;
 
+            case R.id.share_item:
+                FileUtils.shareFiles();
+                break;
+
             case R.id.open_item:
+                Toast.makeText(EditActivity.this, "未完成", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.export_item:
+                Toast.makeText(EditActivity.this, "未完成", Toast.LENGTH_SHORT).show();
                 break;
         }
 

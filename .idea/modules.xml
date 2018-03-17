@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MEditor.iml" filepath="$PROJECT_DIR$/MEditor.iml" />
+      <module fileurl="file://D:\AndroidLabtest\winter holidays project\MEditor1\MEditor.iml" filepath="D:\AndroidLabtest\winter holidays project\MEditor1\MEditor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\AndroidLabtest\winter holidays project\MEditor1\app\app.iml" filepath="D:\AndroidLabtest\winter holidays project\MEditor1\app\app.iml" />
     </modules>
   </component>
 </project>
