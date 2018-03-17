@@ -6,6 +6,10 @@
       <module fileurl="file://D:\AndroidLabtest\winter holidays project\MEditor1\MEditor.iml" filepath="D:\AndroidLabtest\winter holidays project\MEditor1\MEditor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://D:\AndroidLabtest\winter holidays project\MEditor1\app\app.iml" filepath="D:\AndroidLabtest\winter holidays project\MEditor1\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bottomsheet/bottomsheet.iml" filepath="$PROJECT_DIR$/bottomsheet/bottomsheet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bottomsheet-commons/bottomsheet-commons.iml" filepath="$PROJECT_DIR$/bottomsheet-commons/bottomsheet-commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bottomsheet-sample/bottomsheet-sample.iml" filepath="$PROJECT_DIR$/bottomsheet-sample/bottomsheet-sample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/markdownview/markdownview.iml" filepath="$PROJECT_DIR$/markdownview/markdownview.iml" />
     </modules>
   </component>
 </project>
