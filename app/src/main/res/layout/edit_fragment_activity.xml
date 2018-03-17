@@ -8,7 +8,7 @@
 
 
     <EditText
-        android:id="@+id/title"
+        android:id="@+id/edit_title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#00000000"
@@ -32,9 +32,9 @@
         android:background="@color/colorGary"/>
 
     <EditText
+        android:id="@+id/edit_content_text"
         android:textSize="16sp"
         android:textColor="#333"
-        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#00000000"

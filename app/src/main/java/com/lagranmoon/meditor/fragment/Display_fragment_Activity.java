@@ -13,9 +13,12 @@ import android.widget.EditText;
 
 import com.lagranmoon.meditor.R;
 
-public class Display_fragment_Activity extends Fragment {
+import us.feras.mdv.MarkdownView;
 
-    public static Display_fragment_Activity newInstance(){
+public class Display_fragment_Activity extends Fragment {
+    private MarkdownView markdownView;
+
+    public static Display_fragment_Activity getInstance(){
 
         Bundle bundle = new Bundle();
         Display_fragment_Activity display_fragment_activity
@@ -33,5 +36,9 @@ public class Display_fragment_Activity extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        markdownView = view.findViewById(R.id.markdown_content);
+        //markdownView.loadMarkdown();
     }
 }

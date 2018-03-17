@@ -2,6 +2,7 @@ package com.lagranmoon.meditor.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -24,6 +25,10 @@ public class EditActivity extends BaseActivity {
     public final int EDIT_MODE = 0;
     public final int DISPLAY_MODE = 1;
     private Intent intent;
+    private String filePath;
+    private String fileName;
+
+    private Edit_fragment_Activity edit_fragment_activity;
 
     private ViewPager mViewPager;//滑动效果
 
@@ -31,11 +36,43 @@ public class EditActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_activity);
-        intent = getIntent();
+
+        filePath = getIntent().getStringExtra("filePath");
+        fileName = getIntent().getStringExtra("fileName");
+        edit_fragment_activity = Edit_fragment_Activity.getInstance(filePath);
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
     }
+
+    private void InitViewPager() {
+
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFragment(Edit_fragment_Activity.getInstance(filePath));
+        viewPagerAdapter.addFragment(Display_fragment_Activity.getInstance());
+
+        mViewPager.setAdapter(viewPagerAdapter);
+        //设置默认打开第一页
+        mViewPager.setCurrentItem(EDIT_MODE);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+    }
+
 
     //菜单选项的逻辑
     @Override
@@ -53,6 +90,7 @@ public class EditActivity extends BaseActivity {
                 break;
 
             case R.id.save_item:
+
                 break;
 
             case R.id.regain_item:
@@ -75,17 +113,4 @@ public class EditActivity extends BaseActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    private void InitViewPager() {
-
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(Edit_fragment_Activity.newInstance());
-        viewPagerAdapter.addFragment(Display_fragment_Activity.newInstance());
-
-        mViewPager.setAdapter(viewPagerAdapter);
-        //设置默认打开第一页
-        mViewPager.setCurrentItem(EDIT_MODE);
-
-    }
-
 }

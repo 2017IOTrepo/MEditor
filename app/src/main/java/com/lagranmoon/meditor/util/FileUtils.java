@@ -79,13 +79,9 @@ public class FileUtils {
     }
 
     public static void openFiles(Files files, Context context) {
-
-        //打开文件
-        //String path = newFile.getPath();
-        //intent.setDataAndType(Uri.fromFile(new File(path)), "file");
         Intent intent = new Intent(context, EditActivity.class);
-        intent.putExtra("FilePath", files.getPath());
-        intent.putExtra("FileName", files.getTitle());
+        intent.putExtra("fileName", files.getTitle());
+        intent.putExtra("filePath", files.getPath());
         context.startActivity(intent);
     }
 
