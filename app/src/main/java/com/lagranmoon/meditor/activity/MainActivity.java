@@ -171,8 +171,9 @@ public class MainActivity extends BaseActivity
     private void creatNote() {
         mContext = MainActivity.this;
         Intent intent = new Intent(mContext, EditActivity.class);
+        intent.putExtra("ifNew", true);
         intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(file), "file");
+        //设置数据URI与数据类型匹配
         mContext.startActivity(intent);
    }
 

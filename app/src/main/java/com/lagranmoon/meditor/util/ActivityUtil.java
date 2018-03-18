@@ -1,9 +1,12 @@
 package com.lagranmoon.meditor.util;
 
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 /**
      * Created by lagranmoon on 2017/8/21.
@@ -38,4 +41,5 @@ public class ActivityUtil {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
 }

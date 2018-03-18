@@ -2,8 +2,10 @@ package com.lagranmoon.meditor.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,17 +16,20 @@ import com.lagranmoon.meditor.adapter.ViewPagerAdapter;
 import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.fragment.Display_fragment_Activity;
 import com.lagranmoon.meditor.fragment.Edit_fragment_Activity;
+import com.lagranmoon.meditor.util.ActivityUtil;
 import com.lagranmoon.meditor.util.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
-public class EditActivity extends BaseActivity {
+public class EditActivity extends BaseActivity{
 
+    private ActivityUtil activityUtil;
     private Context context;
     public final String TAG = "EditActivity";
     public final int EDIT_MODE = 0;
-    public final int DISPLAY_MODE = 1;
     private Intent intent;
+    private boolean ifNew;
     private String filePath;
     private String fileName;
 
@@ -39,20 +44,22 @@ public class EditActivity extends BaseActivity {
 
         filePath = getIntent().getStringExtra("filePath");
         fileName = getIntent().getStringExtra("fileName");
-        edit_fragment_activity = Edit_fragment_Activity.getInstance(filePath);
-
-        Bundle bundle = new Bundle();
-        bundle.putString("fileName", fileName);
-        edit_fragment_activity.setArguments(bundle);
+        edit_fragment_activity = Edit_fragment_Activity.getInstance(filePath, fileName);
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
+
+        activityUtil = new ActivityUtil();
+        ifNew = getIntent().getBooleanExtra("ifNew", true);
     }
 
     private void InitViewPager() {
-
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(Edit_fragment_Activity.getInstance(filePath));
+        if (!ifNew){
+            viewPagerAdapter.addFragment(Edit_fragment_Activity.getInstance(filePath, fileName));
+        }else {
+            viewPagerAdapter.addFragment(new Edit_fragment_Activity());
+        }
         viewPagerAdapter.addFragment(Display_fragment_Activity.getInstance());
 
         mViewPager.setAdapter(viewPagerAdapter);
@@ -77,6 +84,19 @@ public class EditActivity extends BaseActivity {
 
     }
 
+    private SharedPreferences portrait_Pref;
+    private SharedPreferences.Editor portrait_editor;
+    private boolean ifPortrait = false;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        portrait_Pref = getSharedPreferences("properties", MODE_PRIVATE);
+        ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
+
+        if ((getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) && ifPortrait){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
 
     //菜单选项的逻辑
     @Override
@@ -94,7 +114,7 @@ public class EditActivity extends BaseActivity {
                 break;
 
             case R.id.save_item:
-
+                saveAndExit();
                 break;
 
             case R.id.regain_item:
@@ -116,5 +136,21 @@ public class EditActivity extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveAndExit() {
+        if (ifNew){
+            File file = new File(filePath, fileName);
+            if (file.exists()){
+                Snackbar.make(mViewPager, "文件已存在", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

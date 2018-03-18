@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.ViewUtils;
 import android.widget.Toast;
 
 import com.lagranmoon.meditor.activity.EditActivity;
@@ -82,6 +83,9 @@ public class FileUtils {
         Intent intent = new Intent(context, EditActivity.class);
         intent.putExtra("fileName", files.getTitle());
         intent.putExtra("filePath", files.getPath());
+        intent.setAction(Intent.ACTION_VIEW);
+        //设置数据URI与数据类型匹配
+        intent.setDataAndType(Uri.fromFile(new File(files.getPath())), "file");
         context.startActivity(intent);
     }
 
