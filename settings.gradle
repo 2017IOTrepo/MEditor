@@ -1,1 +1,1 @@
-include ':app', ':markdownview', ':bottomsheet-commons', ':bottomsheet', ':bottomsheet-sample'
+include ':app'
