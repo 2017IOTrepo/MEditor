@@ -55,14 +55,6 @@
                 tools:text="2018.03.01"/>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/star_Image_View"
-            android:src="@drawable/ic_star_border_black_48dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />
-
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

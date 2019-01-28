@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by 13256 on 2018/3/2.
+ * Created by xmmmmovo on 2018/3/2.
  */
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolder> {
@@ -80,7 +80,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
             fileName = itemView.findViewById(R.id.file_name_text_view);
             fileTime = itemView.findViewById(R.id.file_time_text_view);
             fileNumber = itemView.findViewById(R.id.item_number_text_view);
-            starFiles = itemView.findViewById(R.id.star_Image_View);
         }
 
         public void bindHolder(final Files files, int position) {

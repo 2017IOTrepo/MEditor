@@ -76,26 +76,4 @@ public class Files {
                 ", ifStar=" + ifStar +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (o == null)
-            return false;
-
-        if (o == this)
-            return true;
-
-        if (o instanceof  Files){
-            Files files = (Files)o;
-            return title.equals(files.title) && date.equals(files.date);
-        }
-
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.title.hashCode();
-    }
 }

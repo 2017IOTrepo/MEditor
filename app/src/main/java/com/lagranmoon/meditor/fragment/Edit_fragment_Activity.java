@@ -156,5 +156,4 @@ public class Edit_fragment_Activity extends Fragment {
 
         return view;
     }
-
 }
