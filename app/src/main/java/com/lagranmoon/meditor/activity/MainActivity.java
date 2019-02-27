@@ -56,11 +56,14 @@ public class MainActivity extends BaseActivity
     private boolean IsSearchViewShow = false;
     private List<Files> SearchResultFilesList = null;
 
+    // 刷新
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerView;
+    // 文件列表
     private List<Files> mFiles = new ArrayList<>();
     private Files tempFiles;
+    // rerecyclerview的Adapter
     private FileAdapter fileAdapter;
     private Context mContext;
     private SharedPreferences portrait_Pref;
@@ -71,7 +74,6 @@ public class MainActivity extends BaseActivity
 
     private File file;
     private String rootFilePath;
-    private List<Files> filesList = new ArrayList<>();
 
     private long customTime = 0;
 
@@ -155,15 +157,6 @@ public class MainActivity extends BaseActivity
 
     }
 
-    @Override
-    protected void onResume() {
-        if ((getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) && ifPortrait){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-        super.onResume();
-    }
-
     /*
     * 新建文本
     *
@@ -182,7 +175,7 @@ public class MainActivity extends BaseActivity
     *
     * */
     private void loadFileList() {
-        mFiles = getAllFiles(rootFilePath + "/MEditor_works");
+        getAllFiles(rootFilePath + "/MEditor_works");
         getFileListSucceed();
         initRecyclerView(mFiles);
     }
@@ -246,19 +239,17 @@ public class MainActivity extends BaseActivity
     }
 
     /*
-    * 获取sd卡中的所有.md文件(废弃)
-    *
-    * 因有bug所以改为指定文件夹内文件
+    * 读取指定文件夹内文件
     * 利用递归
     * */
-    private List<Files> getAllFiles(String FilePath) {
+    private int getAllFiles(String FilePath) {
         String fileName;
         String suf;//文件后缀名
         File dir = new File(FilePath);
         File[] files = dir.listFiles();//获取文件夹下的所有文件及文件夹
 
         if (files == null)
-            return null;
+            return 0;
 
         for (int i = 0; i < files.length; i++) {
 
@@ -273,17 +264,14 @@ public class MainActivity extends BaseActivity
                 if (suf.equalsIgnoreCase("md") || suf.equalsIgnoreCase("mdown") ||
                         suf.equalsIgnoreCase("markdown")) {
                     tempFiles = FileUtils.getFile(files[i]);
-                    filesList.add(tempFiles);
-                    if (pref.contains(tempFiles.getTitle()))
-                        tempFiles.setIfStar(pref.getBoolean(tempFiles.getTitle(), ifStar));//ifStar为未检索到返回的默认值(false)
-
+                    mFiles.add(tempFiles);
 
                     Log.d("FileName", files[i].getName());
                 }
             }
 
         }
-        return filesList;
+        return 1;
     }
 
     //初始化recyclerView
@@ -398,48 +386,22 @@ public class MainActivity extends BaseActivity
     * */
     @Override
     public void onItemLongClick(final Files files) {
-        String[] choice = null;
-
-        if (!files.isIfStar()) {
-            choice =  new String[]{"加入星标", "删除", "分享"};
-            showDialogs(files, choice, "成功标记星标", "已删除", true);
-        }else {
-            choice = new String[]{"去除星标", "删除", "分享"};
-            showDialogs(files, choice, "成功去除星标", "已删除", false);
-        }
-
-    }
-
-    private void showDialogs(final Files files, final String[] choice, final String firstToast, final String secondToast, final boolean ifStar) {
+        String[] choice = {"删除", "分享"};
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setItems(choice, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {
-
                             case 0:
-                                if (ifStar){
-                                    editor.putBoolean(files.getTitle(), ifStar);
-                                    editor.apply();
-                                }else{
-                                    editor.remove(files.getTitle());
-                                    editor.apply();
-                                }
-                                files.setIfStar(ifStar);
-                                initRecyclerView(mFiles);
-                                Toast.makeText(MainActivity.this, firstToast, Toast.LENGTH_SHORT).show();
+                                new File(files.getPath()).delete();
+                                mFiles.remove(files);
+//                                initRecyclerView(mFiles);
+//                                getFileListSucceed();
+                                Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                                 break;
 
                             case 1:
-                                new File(files.getPath()).delete();
-                                mFiles.remove(files);
-                                initRecyclerView(mFiles);
-                                getFileListSucceed();
-                                Toast.makeText(MainActivity.this, secondToast, Toast.LENGTH_SHORT).show();
-                                break;
-
-                            case 2:
                                 FileUtils.shareFiles(new File(files.getPath(), files.getTitle()), MainActivity.this);
                                 break;
                         }
@@ -447,9 +409,6 @@ public class MainActivity extends BaseActivity
                     }
                 })
                 .show();
-
     }
-
-
 }
 

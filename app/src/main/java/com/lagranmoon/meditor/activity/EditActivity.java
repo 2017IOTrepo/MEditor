@@ -84,20 +84,6 @@ public class EditActivity extends BaseActivity{
 
     }
 
-    private SharedPreferences portrait_Pref;
-    private SharedPreferences.Editor portrait_editor;
-    private boolean ifPortrait = false;
-    @Override
-    protected void onResume() {
-        super.onResume();
-        portrait_Pref = getSharedPreferences("properties", MODE_PRIVATE);
-        ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
-
-        if ((getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) && ifPortrait){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-    }
-
     //菜单选项的逻辑
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

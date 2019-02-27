@@ -1,5 +1,7 @@
 package com.lagranmoon.meditor.base;
 
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -23,5 +25,18 @@ public class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ActivityCollector.removeActivity(this);
+    }
+
+    private SharedPreferences portrait_Pref;
+    private SharedPreferences.Editor portrait_editor;
+    private boolean ifPortrait = false;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        portrait_Pref = getSharedPreferences("properties", MODE_PRIVATE);
+        ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
+        if ((getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) && ifPortrait){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 }

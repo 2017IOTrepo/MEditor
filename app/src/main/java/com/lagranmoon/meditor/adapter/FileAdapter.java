@@ -73,7 +73,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
         private TextView fileName;
         private TextView fileTime;
         private TextView fileNumber;
-        private ImageView starFiles;
 
         public FilesViewHolder(View itemView) {
             super(itemView);
@@ -86,8 +85,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FilesViewHolde
             fileNumber.setText((position + 1) + "");
             fileName.setText(files.getTitle());
             fileTime.setText(Unitsutils.friendlyTime(files.getDate()));
-            if (!files.isIfStar())
-                starFiles.setVisibility(View.GONE);
             if (mOnItemClickLitener != null) {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

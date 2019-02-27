@@ -9,8 +9,9 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.lagranmoon.meditor.R;
+import com.lagranmoon.meditor.base.BaseActivity;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
 
     private Switch aSwitch;
     private SharedPreferences.Editor editor;

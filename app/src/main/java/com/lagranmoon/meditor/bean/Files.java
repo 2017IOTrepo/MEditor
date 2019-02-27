@@ -13,7 +13,6 @@ public class Files {
     private String path;
     private Date date;
     private long size;
-    private boolean ifStar = false;
 
     public String getTitle() {
         return title;
@@ -47,20 +46,11 @@ public class Files {
         this.size = size;
     }
 
-    public boolean isIfStar() {
-        return ifStar;
-    }
-
-    public void setIfStar(boolean ifStar) {
-        this.ifStar = ifStar;
-    }
-
-    public Files(String title, String path, Date date, long size, boolean ifStar){
+    public Files(String title, String path, Date date, long size){
         this.title = title;
         this.path = path;
         this.date = date;
         this.size = size;
-        this.ifStar = ifStar;
     }
 
     public Files() {
@@ -68,12 +58,9 @@ public class Files {
 
     @Override
     public String toString() {
-        return "Files{" +
-                "title='" + title + '\'' +
-                ", path='" + path + '\'' +
-                ", date=" + date +
-                ", size=" + size +
-                ", ifStar=" + ifStar +
-                '}';
+        return  "标题: " + title +
+                "\n路径:" + path +
+                "\n日期" + date +
+                "\n大小" + size ;
     }
 }
