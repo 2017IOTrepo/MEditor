@@ -81,7 +81,6 @@ public class EditActivity extends BaseActivity{
 
             }
         });
-
     }
 
     //菜单选项的逻辑
@@ -95,27 +94,27 @@ public class EditActivity extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
-
+            // 撤回
             case R.id.withdraw_item:
                 break;
 
+            // 保存
             case R.id.save_item:
                 saveAndExit();
                 break;
 
+            // 恢复
             case R.id.regain_item:
                 break;
 
+            // 分享
             case R.id.share_item:
                 FileUtils.shareFiles(new
                         File(intent.getStringExtra("FilePath"),
                         intent.getStringExtra("FileName")), EditActivity.this);
                 break;
 
-            case R.id.open_item:
-                Toast.makeText(EditActivity.this, "未完成", Toast.LENGTH_SHORT).show();
-                break;
-
+            // 导出
             case R.id.export_item:
                 Toast.makeText(EditActivity.this, "未完成", Toast.LENGTH_SHORT).show();
                 break;
@@ -124,6 +123,9 @@ public class EditActivity extends BaseActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 保存并退出
+     * */
     private void saveAndExit() {
         if (ifNew){
             File file = new File(filePath, fileName);

@@ -39,8 +39,7 @@ public class FileUtils {
 
     /**
      * 照顾旧机型
-     *
-     * Gets root path.
+     * 获取根目录
      *
      * @param context the context
      * @return the root path

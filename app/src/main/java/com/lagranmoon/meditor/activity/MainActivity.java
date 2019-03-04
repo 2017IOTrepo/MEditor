@@ -48,6 +48,8 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, FileAdapter.OnItemClickLitener {
 
     private Toolbar toolbar;
+    private FloatingActionButton add_button;
+    private DrawerLayout drawer;
     private NavigationView navigationView;
     private TextView emptyContent;
     private boolean ifPortrait = false;
@@ -58,7 +60,6 @@ public class MainActivity extends BaseActivity
 
     // 刷新
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
     private RecyclerView mRecyclerView;
     // 文件列表
     private List<Files> mFiles = new ArrayList<>();
@@ -82,10 +83,10 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        initView();
+
         setSupportActionBar(toolbar);
 
-        FloatingActionButton add_button = (FloatingActionButton) findViewById(R.id.add_button_in_mainactivity);
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,16 +95,13 @@ public class MainActivity extends BaseActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refres);
         mSwipeRefreshLayout.setColorSchemeColors(R.color.colorDefault);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -114,7 +112,6 @@ public class MainActivity extends BaseActivity
             }
         });
 
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
         //权限申请相关
         RequestPermissions.requestPermissions(this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -155,6 +152,15 @@ public class MainActivity extends BaseActivity
 
         ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
 
+    }
+
+    void initView(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        add_button = (FloatingActionButton) findViewById(R.id.add_button_in_mainactivity);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refres);
     }
 
     /*
@@ -311,7 +317,6 @@ public class MainActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
     /*
      * 以下为菜单栏的逻辑
