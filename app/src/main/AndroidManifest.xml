@@ -27,10 +27,10 @@
         </activity>
         <activity android:name=".activity.EditActivity" />
         <activity
-            android:name=".fragment.Edit_fragment_Activity"
+            android:name=".fragment.Edit_fragment"
             android:label="@string/title_activity_edit_fragment_"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".fragment.Display_fragment_Activity" />
+        <activity android:name=".fragment.Display_fragment" />
         <activity android:name=".activity.AboutActivity" />
         <activity android:name=".fragment.Content_main_fragment" />
         <activity android:name=".activity.SettingsActivity"></activity>

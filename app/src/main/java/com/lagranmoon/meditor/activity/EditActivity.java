@@ -2,8 +2,6 @@ package com.lagranmoon.meditor.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
@@ -14,8 +12,8 @@ import android.widget.Toast;
 import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.adapter.ViewPagerAdapter;
 import com.lagranmoon.meditor.base.BaseActivity;
-import com.lagranmoon.meditor.fragment.Display_fragment_Activity;
-import com.lagranmoon.meditor.fragment.Edit_fragment_Activity;
+import com.lagranmoon.meditor.fragment.Display_fragment;
+import com.lagranmoon.meditor.fragment.Edit_fragment;
 import com.lagranmoon.meditor.util.ActivityUtil;
 import com.lagranmoon.meditor.util.FileUtils;
 
@@ -33,7 +31,7 @@ public class EditActivity extends BaseActivity{
     private String filePath;
     private String fileName;
 
-    private Edit_fragment_Activity edit_fragment_activity;
+    private Edit_fragment edit_fragment_;
 
     private ViewPager mViewPager;//滑动效果
 
@@ -44,7 +42,7 @@ public class EditActivity extends BaseActivity{
 
         filePath = getIntent().getStringExtra("filePath");
         fileName = getIntent().getStringExtra("fileName");
-        edit_fragment_activity = Edit_fragment_Activity.getInstance(filePath, fileName);
+        edit_fragment_ = Edit_fragment.getInstance(filePath, fileName);
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
@@ -56,11 +54,11 @@ public class EditActivity extends BaseActivity{
     private void InitViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         if (!ifNew){
-            viewPagerAdapter.addFragment(Edit_fragment_Activity.getInstance(filePath, fileName));
+            viewPagerAdapter.addFragment(Edit_fragment.getInstance(filePath, fileName));
         }else {
-            viewPagerAdapter.addFragment(new Edit_fragment_Activity());
+            viewPagerAdapter.addFragment(new Edit_fragment());
         }
-        viewPagerAdapter.addFragment(Display_fragment_Activity.getInstance());
+        viewPagerAdapter.addFragment(Display_fragment.getInstance());
 
         mViewPager.setAdapter(viewPagerAdapter);
         //设置默认打开第一页

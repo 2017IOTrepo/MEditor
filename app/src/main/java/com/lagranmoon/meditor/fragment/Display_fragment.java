@@ -1,37 +1,34 @@
 package com.lagranmoon.meditor.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.lagranmoon.meditor.R;
 
 import us.feras.mdv.MarkdownView;
 
-public class Display_fragment_Activity extends Fragment {
+public class Display_fragment extends Fragment {
     private MarkdownView markdownView;
 
-    public static Display_fragment_Activity getInstance(){
+    public static Display_fragment getInstance(){
 
         Bundle bundle = new Bundle();
-        Display_fragment_Activity display_fragment_activity
-                = new Display_fragment_Activity();
-        display_fragment_activity.setArguments(bundle);
+        Display_fragment display_fragment_
+                = new Display_fragment();
+        display_fragment_.setArguments(bundle);
 
-        return display_fragment_activity;
+        return display_fragment_;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.display_fragment_activity, container, false);
+        return inflater.inflate(R.layout.display_fragment, container, false);
     }
 
     @Override
