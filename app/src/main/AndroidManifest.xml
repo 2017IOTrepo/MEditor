@@ -32,7 +32,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".fragment.Display_fragment" />
         <activity android:name=".activity.AboutActivity" />
-        <activity android:name=".fragment.Content_main_fragment" />
         <activity android:name=".activity.SettingsActivity"></activity>
 
         <provider

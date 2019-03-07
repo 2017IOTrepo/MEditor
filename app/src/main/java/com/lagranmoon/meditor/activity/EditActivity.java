@@ -2,6 +2,7 @@ package com.lagranmoon.meditor.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
@@ -27,11 +28,8 @@ public class EditActivity extends BaseActivity{
     public final String TAG = "EditActivity";
     public final int EDIT_MODE = 0;
     private Intent intent;
-    private boolean ifNew;
     private String filePath;
     private String fileName;
-
-    private Edit_fragment edit_fragment_;
 
     private ViewPager mViewPager;//滑动效果
 
@@ -42,22 +40,18 @@ public class EditActivity extends BaseActivity{
 
         filePath = getIntent().getStringExtra("filePath");
         fileName = getIntent().getStringExtra("fileName");
-        edit_fragment_ = Edit_fragment.getInstance(filePath, fileName);
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
 
         activityUtil = new ActivityUtil();
-        ifNew = getIntent().getBooleanExtra("ifNew", true);
     }
 
     private void InitViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        if (!ifNew){
-            viewPagerAdapter.addFragment(Edit_fragment.getInstance(filePath, fileName));
-        }else {
-            viewPagerAdapter.addFragment(new Edit_fragment());
-        }
+        // 查看是否是新建文件
+        viewPagerAdapter.addFragment(Edit_fragment.getInstance(filePath, fileName,
+                getIntent().getBooleanExtra("ifNew", true)));
         viewPagerAdapter.addFragment(Display_fragment.getInstance());
 
         mViewPager.setAdapter(viewPagerAdapter);
@@ -73,7 +67,6 @@ public class EditActivity extends BaseActivity{
              * */
             @Override
             public void onPageSelected(int position) {
-
             }
 
             @Override
@@ -92,6 +85,7 @@ public class EditActivity extends BaseActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO 撤回恢复功能
 
         switch (item.getItemId()){
             // 撤回
@@ -114,31 +108,12 @@ public class EditActivity extends BaseActivity{
                         intent.getStringExtra("FileName")), EditActivity.this);
                 break;
 
-            // 导出
+            // PDF导出
             case R.id.export_item:
                 Toast.makeText(EditActivity.this, "未完成", Toast.LENGTH_SHORT).show();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * 保存并退出
-     * */
-    private void saveAndExit() {
-        if (ifNew){
-            File file = new File(filePath, fileName);
-            if (file.exists()){
-                Snackbar.make(mViewPager, "文件已存在", Snackbar.LENGTH_SHORT).show();
-                return;
-            }
-
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

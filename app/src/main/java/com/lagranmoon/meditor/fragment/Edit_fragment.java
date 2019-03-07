@@ -20,6 +20,7 @@ public class Edit_fragment extends Fragment {
 
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
     public static final String FILE_NAME_KEY = "FILE_NAME_KEY";
+    public static final String IF_NEW = "IF_NEW";
     private EditText Title;
     private EditText Content;
     private String fileName;
@@ -29,13 +30,14 @@ public class Edit_fragment extends Fragment {
     // 文件内容
     private String fileContent = "";
 
-    public static Edit_fragment getInstance(String filePath, String fileName){
+    public static Edit_fragment getInstance(String filePath, String fileName, boolean ifNew){
 
         Bundle bundle = new Bundle();
         Edit_fragment edit_fragment
                 = new Edit_fragment();
         bundle.putString(FILE_PATH_KEY, filePath);
         bundle.putString(FILE_NAME_KEY, fileName);
+        bundle.putBoolean(IF_NEW, ifNew);
         edit_fragment.setArguments(bundle);
         return edit_fragment;
     }

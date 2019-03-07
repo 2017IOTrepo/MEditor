@@ -14,8 +14,6 @@ import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.util.ActivityUtil;
 
-import butterknife.OnClick;
-
 public class AboutActivity extends BaseActivity {
 
     private TextView textView;
