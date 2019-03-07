@@ -7,22 +7,24 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.lagranmoon.meditor.R;
-
-import us.feras.mdv.MarkdownView;
+import com.zzhoujay.richtext.RichText;
 
 public class Display_fragment extends Fragment {
-    private MarkdownView markdownView;
+    private TextView markdownTitle;
+    private TextView markdownContent;
+    private Bundle getsBundle;
 
     public static Display_fragment getInstance(){
 
         Bundle bundle = new Bundle();
-        Display_fragment display_fragment_
+        Display_fragment display_fragment
                 = new Display_fragment();
-        display_fragment_.setArguments(bundle);
+        display_fragment.setArguments(bundle);
 
-        return display_fragment_;
+        return display_fragment;
     }
 
     @Nullable
@@ -35,7 +37,26 @@ public class Display_fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        markdownView = view.findViewById(R.id.markdown_content);
-        //markdownView.loadMarkdown();
+        initView(view);
+
+//        getsBundle.getString();
+    }
+
+    /**
+     * 初始化视图
+     * */
+    private void initView(View view) {
+        markdownTitle = view.findViewById(R.id.markdown_title);
+        markdownContent = view.findViewById(R.id.markdown_content);
+        getsBundle = new Bundle();
+    }
+
+    /**
+     * 设置markdown文本
+     * */
+    public void setMarkdownContent(String fromText) {
+        RichText
+                .from(fromText)
+                .into(markdownContent);
     }
 }

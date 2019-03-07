@@ -41,4 +41,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.flipboard:bottomsheet-core:1.5.3'
     implementation 'com.flipboard:bottomsheet-commons:1.5.3'
+    implementation 'com.zzhoujay.richtext:richtext:3.0.7'
+    implementation 'com.zzhoujay:html:1.0.2'
 }

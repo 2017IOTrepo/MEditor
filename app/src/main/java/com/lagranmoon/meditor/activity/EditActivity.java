@@ -66,9 +66,11 @@ public class EditActivity extends BaseActivity{
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
+            /**
+             * 传递内容以及markdown解析
+             * */
             @Override
             public void onPageSelected(int position) {
 
