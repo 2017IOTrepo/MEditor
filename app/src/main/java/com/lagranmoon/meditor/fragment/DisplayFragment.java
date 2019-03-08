@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.telecom.Call;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +11,17 @@ import android.widget.TextView;
 
 import com.lagranmoon.meditor.R;
 import com.zzhoujay.richtext.RichText;
-import com.zzhoujay.richtext.callback.Callback;
 
-public class Display_fragment extends Fragment {
+public class DisplayFragment extends Fragment {
     private TextView markdownTitle;
     private TextView markdownContent;
     private Bundle getsBundle;
 
-    public static Display_fragment getInstance(){
+    public static DisplayFragment getInstance(){
 
         Bundle bundle = new Bundle();
-        Display_fragment display_fragment
-                = new Display_fragment();
+        DisplayFragment display_fragment
+                = new DisplayFragment();
         display_fragment.setArguments(bundle);
 
         return display_fragment;

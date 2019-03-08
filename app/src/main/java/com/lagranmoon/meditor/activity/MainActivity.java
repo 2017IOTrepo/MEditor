@@ -71,7 +71,6 @@ public class MainActivity extends BaseActivity
     private SharedPreferences.Editor portrait_editor;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
-    private boolean ifStar = false;
 
     private File file;
     private String rootFilePath;
@@ -154,6 +153,9 @@ public class MainActivity extends BaseActivity
 
     }
 
+    /**
+     * 初始化
+     * */
     void initView(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         add_button = (FloatingActionButton) findViewById(R.id.add_button_in_mainactivity);
@@ -161,11 +163,12 @@ public class MainActivity extends BaseActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refres);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     /*
     * 新建文本
-    *
     * */
     private void creatNote() {
         mContext = MainActivity.this;
@@ -282,8 +285,6 @@ public class MainActivity extends BaseActivity
 
     //初始化recyclerView
     private void initRecyclerView(List<Files> mFiles) {
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(fileAdapter = new FileAdapter(mFiles));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLongClickable(true);
@@ -367,6 +368,9 @@ public class MainActivity extends BaseActivity
             }
         });
 
+        /**
+         * 查询视图逻辑
+         * */
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -378,7 +382,7 @@ public class MainActivity extends BaseActivity
 
     /*
     * 文件短按逻辑
-    *
+    * 打开
     * */
     @Override
     public void onItemClick(Files files) {
@@ -387,7 +391,7 @@ public class MainActivity extends BaseActivity
 
     /*
     * 文件长按逻辑
-    *
+    * 删除or分享
     * */
     @Override
     public void onItemLongClick(final Files files) {
@@ -401,8 +405,8 @@ public class MainActivity extends BaseActivity
                             case 0:
                                 new File(files.getPath()).delete();
                                 mFiles.remove(files);
-//                                initRecyclerView(mFiles);
-//                                getFileListSucceed();
+//                              initRecyclerView(mFiles);
+//                              getFileListSucceed();
                                 Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                                 break;
 

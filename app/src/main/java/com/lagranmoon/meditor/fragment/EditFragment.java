@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Edit_fragment extends Fragment {
+public class EditFragment extends Fragment {
 
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
     public static final String FILE_NAME_KEY = "FILE_NAME_KEY";
@@ -29,12 +31,13 @@ public class Edit_fragment extends Fragment {
     private File file;
     // 文件内容
     private String fileContent = "";
+    public boolean isTextChange = false;
 
-    public static Edit_fragment getInstance(String filePath, String fileName, boolean ifNew){
+    public static EditFragment getInstance(String filePath, String fileName, boolean ifNew){
 
         Bundle bundle = new Bundle();
-        Edit_fragment edit_fragment
-                = new Edit_fragment();
+        EditFragment edit_fragment
+                = new EditFragment();
         bundle.putString(FILE_PATH_KEY, filePath);
         bundle.putString(FILE_NAME_KEY, fileName);
         bundle.putBoolean(IF_NEW, ifNew);
@@ -97,6 +100,22 @@ public class Edit_fragment extends Fragment {
 
         Title.setText(fileName.substring(0 , fileName.lastIndexOf(".")));
         Content.setText(fileContent);
+
+        Content.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // 更改过文件
+                isTextChange = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         return view;
     }

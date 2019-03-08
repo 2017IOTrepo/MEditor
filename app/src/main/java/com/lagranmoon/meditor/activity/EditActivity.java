@@ -1,11 +1,12 @@
 package com.lagranmoon.meditor.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -13,13 +14,15 @@ import android.widget.Toast;
 import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.adapter.ViewPagerAdapter;
 import com.lagranmoon.meditor.base.BaseActivity;
-import com.lagranmoon.meditor.fragment.Display_fragment;
-import com.lagranmoon.meditor.fragment.Edit_fragment;
+import com.lagranmoon.meditor.fragment.DisplayFragment;
+import com.lagranmoon.meditor.fragment.EditFragment;
 import com.lagranmoon.meditor.util.ActivityUtil;
 import com.lagranmoon.meditor.util.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class EditActivity extends BaseActivity{
 
@@ -30,6 +33,8 @@ public class EditActivity extends BaseActivity{
     private Intent intent;
     private String filePath;
     private String fileName;
+
+    EditFragment editFragment;
 
     private ViewPager mViewPager;//滑动效果
 
@@ -48,11 +53,12 @@ public class EditActivity extends BaseActivity{
     }
 
     private void InitViewPager() {
+        editFragment = EditFragment.getInstance(filePath, fileName,
+                getIntent().getBooleanExtra("ifNew", true));
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         // 查看是否是新建文件
-        viewPagerAdapter.addFragment(Edit_fragment.getInstance(filePath, fileName,
-                getIntent().getBooleanExtra("ifNew", true)));
-        viewPagerAdapter.addFragment(Display_fragment.getInstance());
+        viewPagerAdapter.addFragment(editFragment);
+        viewPagerAdapter.addFragment(DisplayFragment.getInstance());
 
         mViewPager.setAdapter(viewPagerAdapter);
         //设置默认打开第一页
@@ -94,7 +100,7 @@ public class EditActivity extends BaseActivity{
 
             // 保存
             case R.id.save_item:
-                saveAndExit();
+                save();
                 break;
 
             // 恢复
@@ -109,11 +115,68 @@ public class EditActivity extends BaseActivity{
                 break;
 
             // PDF导出
+            // TODO 利用iTEXT
             case R.id.export_item:
                 Toast.makeText(EditActivity.this, "未完成", Toast.LENGTH_SHORT).show();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 保存
+     * 流写入
+     * */
+    void save(){
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filePath, context.MODE_PRIVATE));
+            outputStreamWriter.write(editFragment.getContent());
+            outputStreamWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.e("Exception", "File write failed: " + e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+    /**
+     * 这里退出时检测是否有修改没有保存
+     * */
+    @Override
+    public void onBackPressed() {
+        if (editFragment.isTextChange){
+            askIsSave();
+        }else {
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * 询问是否保存
+     * */
+    private void askIsSave() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提醒！")
+                .setMessage("您有为保存的部分，是否为您保存？")
+                .setCancelable(true)
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editFragment.isTextChange = false;
+                        save();
+                        onBackPressed();
+                    }
+                })
+                .setNegativeButton("不用", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editFragment.isTextChange = false;
+                        onBackPressed(); // 重新调用用以退出
+                    }
+                })
+                .show();
     }
 }

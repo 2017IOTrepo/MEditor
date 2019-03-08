@@ -5,8 +5,9 @@ import java.util.Date;
 /**
  * Created by 13256 on 2018/2/27.
  */
-
-//文件的实体类
+/**
+ * 文件实体类
+ * */
 public class Files {
 
     private String title;

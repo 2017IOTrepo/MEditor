@@ -33,7 +33,7 @@ public class FileUtils {
         files.setTitle(file.getName());
         files.setPath(file.getAbsolutePath());
         files.setDate(new Date(file.lastModified()));
-
+        System.out.println(files.getPath());
         return files;
     }
 
@@ -62,8 +62,8 @@ public class FileUtils {
      * 若输入字符串为null或空字符串，返回true
      * ViewRoot
      *
-     * @param input
-     * @return boolean
+     * @param input 输入字符串
+     * @return boolean 返回是否
      */
     public static boolean isEmpty(String input) {
         if (input == null || "".equals(input))
@@ -90,10 +90,12 @@ public class FileUtils {
 
     /*
     * 分享文件
-    *
-    * 未完成 bug有点多。。。。
     * */
     public static void shareFiles(File file, Context mContext){
-        Toast.makeText(mContext, "bug原因放置", Toast.LENGTH_SHORT).show();
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        share.setType("*/*");
+        mContext.startActivity(Intent.createChooser(share, "分享"));
     }
 }
