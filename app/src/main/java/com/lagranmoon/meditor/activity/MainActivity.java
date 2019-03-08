@@ -35,6 +35,7 @@ import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.adapter.FileAdapter;
 import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.bean.Files;
+import com.lagranmoon.meditor.fragment.EditFragment;
 import com.lagranmoon.meditor.util.ActivityCollector;
 import com.lagranmoon.meditor.util.FileUtils;
 import com.lagranmoon.meditor.util.RequestPermissions;
@@ -121,6 +122,17 @@ public class MainActivity extends BaseActivity
 
                     @Override
                     public void onDenied(List<String> deniedList) {
+                        Toast.makeText(mContext, "error", Toast.LENGTH_LONG).show();
+                        new AlertDialog.Builder(mContext)
+                                .setTitle("错误")
+                                .setMessage("对不起 您没有通过所有权限\n我们不能让您用这种废物一样的软件")
+                                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .setCancelable(false)
+                                .show();
                         ActivityCollector.finishiAll();
                     }
                 });
@@ -130,10 +142,6 @@ public class MainActivity extends BaseActivity
         if (!file.exists()) {
             file.mkdir();
         }
-
-        //portrait_editor = getSharedPreferences("properties", MODE_PRIVATE).edit();
-        portrait_Pref = getSharedPreferences("properties", MODE_PRIVATE);
-        ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
     }
 
     @Override
@@ -144,9 +152,15 @@ public class MainActivity extends BaseActivity
             mFiles.clear();
             loadFileList();
         }
+    }
 
-        ifPortrait = portrait_Pref.getBoolean("ifPortrait", ifPortrait);
-
+    /**
+     * 回调
+     * */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        RequestPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     /**
@@ -168,7 +182,9 @@ public class MainActivity extends BaseActivity
     private void creatNote() {
         mContext = MainActivity.this;
         Intent intent = new Intent(mContext, EditActivity.class);
-        intent.putExtra("ifNew", true);
+        intent.putExtra(EditFragment.IF_NEW, true);
+        intent.putExtra(EditFragment.FILE_PATH_KEY, rootFilePath + "/MEditor_works");
+        intent.putExtra(EditFragment.FILE_NAME_KEY, "");
         intent.setAction(Intent.ACTION_VIEW);
         //设置数据URI与数据类型匹配
         mContext.startActivity(intent);
@@ -176,7 +192,6 @@ public class MainActivity extends BaseActivity
 
     /*
     * 读取文件
-    *
     * */
     private void loadFileList() {
         getAllFiles(rootFilePath + "/MEditor_works");
@@ -186,7 +201,6 @@ public class MainActivity extends BaseActivity
 
     /*
     * 列表获取完成
-    *
     * */
     private void getFileListSucceed() {
         emptyContent = (TextView) findViewById(R.id.empty_content);
@@ -201,7 +215,6 @@ public class MainActivity extends BaseActivity
 
     /*
     * 停止刷新
-    *
     * */
     private void finshRefresh() {
 
@@ -215,20 +228,20 @@ public class MainActivity extends BaseActivity
 
     /*
     * 返回键逻辑
-    *
     * */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+
+            //搜索栏退出逻辑
         } else if (searchView != null && searchView.isShown() && IsSearchViewShow) {
             searchView.onActionViewCollapsed();
             searchView.setQuery("", false);
             IsSearchViewShow = false;
             initRecyclerView(mFiles);
         } else {
-
             //软件退出逻辑
             if (Math.abs(customTime - System.currentTimeMillis()) < 2000) {
                 finish();
@@ -289,7 +302,6 @@ public class MainActivity extends BaseActivity
 
     /*
     * 侧边栏菜单逻辑
-    *
     * */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -298,11 +310,13 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nightTheme) {
+            // TODO 夜间模式
             Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.action_settings) {
             SettingsActivity.startActivity(MainActivity.this);
         } else if (id == R.id.diaryUI) {
+            // TODO 利用recyclerView进行编写日记模式
             Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_about) {
@@ -342,7 +356,8 @@ public class MainActivity extends BaseActivity
                 if (!FileUtils.isEmpty(query)) {
                     SearchResultFilesList = new ArrayList<>();
 
-                    //文件搜索逻辑
+                    // 简陋至极的搜索逻辑
+                    // 复杂度高到爆炸
                     for (Files containFile:
                             mFiles) {
                         if (containFile.getTitle().contains(query))

@@ -31,10 +31,13 @@ public class EditFragment extends Fragment {
     private File file;
     // 文件内容
     private String fileContent = "";
+    // 用于记录是否是新打开的文件
+    private boolean isNew = false;
+
     public boolean isTextChange = false;
 
     // 记录起始点于更改数值
-    int startWatcher = -1, countWatcher = -1;
+    int startWatcher = -1, countWatcher = -1, beforeWatcher = -1;
 
     public static EditFragment getInstance(String filePath, String fileName, boolean ifNew){
 
@@ -97,13 +100,20 @@ public class EditFragment extends Fragment {
         Bundle bundle = getArguments();
         fileName = bundle.getString(FILE_NAME_KEY);
         filePath = bundle.getString(FILE_PATH_KEY);
+        isNew = bundle.getBoolean(IF_NEW);
 
-        file = new File(filePath, fileName);
-        loadFile();
+        // 如果是新建文件就不用读取内容了
+        if (!isNew){
+            file = new File(filePath, fileName);
+            loadFile();
+        }
 
         textTitle.setText(fileName.substring(0 , fileName.lastIndexOf(".")));
         textContent.setText(fileContent);
 
+        /**
+         * 文本更改监听器
+         * */
         textContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -114,6 +124,7 @@ public class EditFragment extends Fragment {
              * */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
             }
 
             @Override

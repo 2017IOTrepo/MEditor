@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.lagranmoon.meditor.activity.EditActivity;
 import com.lagranmoon.meditor.activity.MainActivity;
 import com.lagranmoon.meditor.bean.Files;
+import com.lagranmoon.meditor.fragment.EditFragment;
 
 import java.io.File;
 import java.util.Date;
@@ -80,8 +81,8 @@ public class FileUtils {
 
     public static void openFiles(Files files, Context context) {
         Intent intent = new Intent(context, EditActivity.class);
-        intent.putExtra("fileName", files.getTitle());
-        intent.putExtra("filePath", files.getPath());
+        intent.putExtra(EditFragment.FILE_NAME_KEY, files.getTitle());
+        intent.putExtra(EditFragment.FILE_PATH_KEY, files.getPath());
         intent.setAction(Intent.ACTION_VIEW);
         //设置数据URI与数据类型匹配
         intent.setDataAndType(Uri.fromFile(new File(files.getPath())), "file");
