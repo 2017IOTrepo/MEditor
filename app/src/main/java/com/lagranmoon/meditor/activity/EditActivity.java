@@ -35,6 +35,7 @@ public class EditActivity extends BaseActivity{
     private String fileName;
 
     EditFragment editFragment;
+    DisplayFragment displayFragment;
 
     private ViewPager mViewPager;//滑动效果
 
@@ -52,13 +53,17 @@ public class EditActivity extends BaseActivity{
         activityUtil = new ActivityUtil();
     }
 
+    /**
+     * 初始化viewpager
+     * */
     private void InitViewPager() {
         editFragment = EditFragment.getInstance(filePath, fileName,
                 getIntent().getBooleanExtra("ifNew", true));
+        displayFragment = DisplayFragment.getInstance();
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         // 查看是否是新建文件
         viewPagerAdapter.addFragment(editFragment);
-        viewPagerAdapter.addFragment(DisplayFragment.getInstance());
+        viewPagerAdapter.addFragment(displayFragment);
 
         mViewPager.setAdapter(viewPagerAdapter);
         //设置默认打开第一页

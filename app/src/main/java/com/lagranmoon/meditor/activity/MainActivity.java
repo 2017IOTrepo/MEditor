@@ -68,9 +68,6 @@ public class MainActivity extends BaseActivity
     private FileAdapter fileAdapter;
     private Context mContext;
     private SharedPreferences portrait_Pref;
-    private SharedPreferences.Editor portrait_editor;
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
 
     private File file;
     private String rootFilePath;
@@ -119,7 +116,6 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onGranted() {
                         rootFilePath = FileUtils.getRootFolder(mContext);
-                        editor = pref.edit();
                         loadFileList();
                     }
 
@@ -161,7 +157,6 @@ public class MainActivity extends BaseActivity
         add_button = (FloatingActionButton) findViewById(R.id.add_button_in_mainactivity);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refres);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

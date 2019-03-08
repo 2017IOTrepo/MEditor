@@ -14,6 +14,10 @@ import com.lagranmoon.meditor.R;
 import com.lagranmoon.meditor.base.BaseActivity;
 import com.lagranmoon.meditor.util.ActivityUtil;
 
+/**
+ * 关于界面
+ * */
+
 public class AboutActivity extends BaseActivity {
 
     private TextView textView;
@@ -29,7 +33,7 @@ public class AboutActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://github.com/Lagranmoon/MEditor"));
+                intent.setData(Uri.parse("https://github.com/xmmmmmovo/MEditor"));
                 startActivity(intent);
             }
         });
