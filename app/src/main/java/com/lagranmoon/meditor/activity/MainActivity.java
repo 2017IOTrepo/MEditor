@@ -129,11 +129,11 @@ public class MainActivity extends BaseActivity
                                 .setNeutralButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+//                                        ActivityCollector.finishiAll();
                                     }
                                 })
                                 .setCancelable(false)
                                 .show();
-                        ActivityCollector.finishiAll();
                     }
                 });
 
