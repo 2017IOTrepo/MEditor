@@ -23,8 +23,8 @@ public class EditFragment extends Fragment {
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
     public static final String FILE_NAME_KEY = "FILE_NAME_KEY";
     public static final String IF_NEW = "IF_NEW";
-    private EditText Title;
-    private EditText Content;
+    private EditText textTitle;
+    private EditText textContent;
     private String fileName;
     private String filePath;
     // 打开或新建的文件
@@ -32,6 +32,9 @@ public class EditFragment extends Fragment {
     // 文件内容
     private String fileContent = "";
     public boolean isTextChange = false;
+
+    // 记录起始点于更改数值
+    int startWatcher = -1, countWatcher = -1;
 
     public static EditFragment getInstance(String filePath, String fileName, boolean ifNew){
 
@@ -52,8 +55,8 @@ public class EditFragment extends Fragment {
     /**
      * 返回内容
      * */
-    public String getContent(){
-        return Content.getText().toString();
+    public String getTextContent(){
+        return textContent.getText().toString();
     }
 
     @Override
@@ -88,8 +91,8 @@ public class EditFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_fragment, container, false);
 
-        Title = view.findViewById(R.id.edit_title_text);
-        Content = view.findViewById(R.id.edit_content_text);
+        textTitle = view.findViewById(R.id.edit_title_text);
+        textContent = view.findViewById(R.id.edit_content_text);
 
         Bundle bundle = getArguments();
         fileName = bundle.getString(FILE_NAME_KEY);
@@ -98,22 +101,24 @@ public class EditFragment extends Fragment {
         file = new File(filePath, fileName);
         loadFile();
 
-        Title.setText(fileName.substring(0 , fileName.lastIndexOf(".")));
-        Content.setText(fileContent);
+        textTitle.setText(fileName.substring(0 , fileName.lastIndexOf(".")));
+        textContent.setText(fileContent);
 
-        Content.addTextChangedListener(new TextWatcher() {
+        textContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
+            /**
+             * TODO 进行撤回与恢复的操作
+             * */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 更改过文件
-                isTextChange = true;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                isTextChange = true;
             }
         });
 

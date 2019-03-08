@@ -61,7 +61,7 @@ public class EditActivity extends BaseActivity{
                 getIntent().getBooleanExtra("ifNew", true));
         displayFragment = DisplayFragment.getInstance();
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        // 查看是否是新建文件
+
         viewPagerAdapter.addFragment(editFragment);
         viewPagerAdapter.addFragment(displayFragment);
 
@@ -82,7 +82,6 @@ public class EditActivity extends BaseActivity{
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
     }
@@ -136,7 +135,7 @@ public class EditActivity extends BaseActivity{
     void save(){
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filePath, context.MODE_PRIVATE));
-            outputStreamWriter.write(editFragment.getContent());
+            outputStreamWriter.write(editFragment.getTextContent());
             outputStreamWriter.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
