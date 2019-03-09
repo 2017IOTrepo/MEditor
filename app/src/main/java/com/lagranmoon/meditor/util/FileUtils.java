@@ -131,11 +131,12 @@ public class FileUtils {
         return mime;
     }
 
+    /**
+     * 重命名函数
+     * */
     public static void changeFileName(String filePath, String newName, String beforeName){
         File oFile = new File(filePath);
-        String newFilePath = filePath.replace(beforeName + ".md", newName);
-        System.out.println(newFilePath);
-        System.out.println(filePath);
+        String newFilePath = filePath.replace(beforeName, newName);
         File nFile = new File(newFilePath);
         oFile.renameTo(nFile);
         return;

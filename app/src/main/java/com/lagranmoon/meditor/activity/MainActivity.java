@@ -104,6 +104,9 @@ public class MainActivity extends BaseActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        /**
+         * 刷新监听
+         * */
         mSwipeRefreshLayout.setColorSchemeColors(R.color.colorDefault);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
