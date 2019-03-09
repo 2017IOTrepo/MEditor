@@ -103,7 +103,7 @@ public class EditActivity extends BaseActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO 撤回恢复功能
+        // TODO 撤回恢复功能BUG(原因：死循环撤回修改)
 
         switch (item.getItemId()){
             // 撤回
@@ -173,7 +173,7 @@ public class EditActivity extends BaseActivity{
      * */
     @Override
     public void onBackPressed() {
-        if (editFragment.isTextChange){
+        if (editFragment.isTextChange || editFragment.isTitleChanged){
             askIsSave();
         }else {
             super.onBackPressed();
@@ -192,6 +192,10 @@ public class EditActivity extends BaseActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         editFragment.isTextChange = false;
+                        if (editFragment.isTitleChanged){
+                            editFragment.isTitleChanged = false;
+                            FileUtils.changeFileName(filePath, editFragment.getFileTitle() + ".md", fileName);
+                        }
                         save();
                         onBackPressed();
                     }
@@ -199,6 +203,7 @@ public class EditActivity extends BaseActivity{
                 .setNegativeButton("不用", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        editFragment.isTitleChanged = false;
                         editFragment.isTextChange = false;
                         onBackPressed(); // 重新调用用以退出
                     }

@@ -39,6 +39,7 @@ public class EditFragment extends Fragment {
     private boolean isNew = false;
 
     public boolean isTextChange = false;
+    public boolean isTitleChanged = false;
     public LinkedList<String> beforeString = new LinkedList<>(); // 所有的撤销栈
 
     public static EditFragment getInstance(String filePath, String fileName, boolean ifNew){
@@ -61,7 +62,11 @@ public class EditFragment extends Fragment {
      * 获取标题
      * */
     public String getFileTitle(){
-        return fileTitle;
+        return textTitle.getText().toString();
+    }
+
+    public String getFileName(){
+        return fileName;
     }
 
     /**
@@ -150,6 +155,27 @@ public class EditFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+
+        /**
+         * 检测标题是否更变
+         * */
+        textTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isTitleChanged = true;
+                isTextChange = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
