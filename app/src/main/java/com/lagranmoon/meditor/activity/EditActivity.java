@@ -21,31 +21,38 @@ import com.lagranmoon.meditor.util.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.LinkedList;
 
 public class EditActivity extends BaseActivity{
 
     private ActivityUtil activityUtil;
-    private Context context;
+    private Context context = this;
     public final String TAG = "EditActivity";
     public final int EDIT_MODE = 0;
     private Intent intent;
     private String filePath;
     private String fileName;
+    private boolean isNew = false;
 
     EditFragment editFragment;
     DisplayFragment displayFragment;
 
     private ViewPager mViewPager;//滑动效果
 
+    private LinkedList<String> backList = new LinkedList<>(); // 回退队列
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_activity);
 
-        filePath = getIntent().getStringExtra("filePath");
-        fileName = getIntent().getStringExtra("fileName");
+        filePath = getIntent().getStringExtra(EditFragment.FILE_PATH_KEY);
+        fileName = getIntent().getStringExtra(EditFragment.FILE_NAME_KEY);
+        isNew = getIntent().getBooleanExtra(EditFragment.IF_NEW, false);
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
@@ -57,8 +64,7 @@ public class EditActivity extends BaseActivity{
      * 初始化viewpager
      * */
     private void InitViewPager() {
-        editFragment = EditFragment.getInstance(filePath, fileName,
-                getIntent().getBooleanExtra("ifNew", true));
+        editFragment = EditFragment.getInstance(filePath, fileName, isNew);
         displayFragment = DisplayFragment.getInstance();
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -78,6 +84,8 @@ public class EditActivity extends BaseActivity{
              * */
             @Override
             public void onPageSelected(int position) {
+                displayFragment.setMarkdownContent(editFragment.getTextContent());
+                displayFragment.setMarkdownTitle(editFragment.getFileTitle());
             }
 
             @Override
@@ -100,6 +108,13 @@ public class EditActivity extends BaseActivity{
         switch (item.getItemId()){
             // 撤回
             case R.id.withdraw_item:
+                if (editFragment.beforeString.isEmpty()){
+                    Toast.makeText(this, "没有可以撤回的东西了！", Toast.LENGTH_LONG).show();
+                }else {
+                    String beString = editFragment.beforeString.removeLast();
+                    editFragment.setTextContent(beString);
+                    backList.add(beString);
+                }
                 break;
 
             // 保存
@@ -109,13 +124,18 @@ public class EditActivity extends BaseActivity{
 
             // 恢复
             case R.id.regain_item:
+                if (backList.isEmpty()){
+                    Toast.makeText(this, "没有可以恢复的东西了！", Toast.LENGTH_LONG).show();
+                }else{
+                    String baString = backList.removeLast();
+                    editFragment.setTextContent(baString);
+                    editFragment.beforeString.add(baString);
+                }
                 break;
 
             // 分享
             case R.id.share_item:
-                FileUtils.shareFiles(new
-                        File(intent.getStringExtra("FilePath"),
-                        intent.getStringExtra("FileName")), EditActivity.this);
+                FileUtils.shareFiles(filePath, EditActivity.this);
                 break;
 
             // PDF导出
@@ -134,16 +154,18 @@ public class EditActivity extends BaseActivity{
      * */
     void save(){
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(filePath, context.MODE_PRIVATE));
-            outputStreamWriter.write(editFragment.getTextContent());
-            outputStreamWriter.close();
+            FileWriter fileWriter = new FileWriter(new File(filePath));
+            fileWriter.write(editFragment.getTextContent());
+            fileWriter.close();
+            Toast.makeText(this, "保存成功！", Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
+            Toast.makeText(this, "保存失败！", Toast.LENGTH_LONG).show();
             e.printStackTrace();
-            Log.e("Exception", "File write failed: " + e.toString());
         } catch (IOException e) {
+            Toast.makeText(this, "保存失败！", Toast.LENGTH_LONG).show();
             e.printStackTrace();
-            Log.e("Exception", "File write failed: " + e.toString());
         }
+        return;
     }
 
     /**

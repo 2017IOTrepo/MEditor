@@ -52,11 +52,18 @@ public class DisplayFragment extends Fragment {
     }
 
     /**
+     * 设置标题
+     * */
+    public void setMarkdownTitle(String fromTitle){
+        markdownTitle.setText(fromTitle);
+    }
+
+    /**
      * 设置markdown文本
      * */
     public void setMarkdownContent(String fromText) {
         RichText
-                .from(fromText)
+                .fromMarkdown(fromText)
                 .into(markdownContent);
     }
 }

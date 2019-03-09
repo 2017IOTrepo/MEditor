@@ -17,14 +17,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
 
 public class EditFragment extends Fragment {
 
+    // 传参定义思密达
     public static final String FILE_PATH_KEY = "FILE_PATH_KEY";
     public static final String FILE_NAME_KEY = "FILE_NAME_KEY";
     public static final String IF_NEW = "IF_NEW";
+
     private EditText textTitle;
     private EditText textContent;
+    private String fileTitle;
     private String fileName;
     private String filePath;
     // 打开或新建的文件
@@ -35,9 +39,7 @@ public class EditFragment extends Fragment {
     private boolean isNew = false;
 
     public boolean isTextChange = false;
-
-    // 记录起始点于更改数值
-    int startWatcher = -1, countWatcher = -1, beforeWatcher = -1;
+    public LinkedList<String> beforeString = new LinkedList<>(); // 所有的撤销栈
 
     public static EditFragment getInstance(String filePath, String fileName, boolean ifNew){
 
@@ -56,10 +58,26 @@ public class EditFragment extends Fragment {
     }
 
     /**
+     * 获取标题
+     * */
+    public String getFileTitle(){
+        return fileTitle;
+    }
+
+    /**
      * 返回内容
      * */
     public String getTextContent(){
         return textContent.getText().toString();
+    }
+
+    /**
+     * 设定内容
+     * */
+    public void setTextContent(String content){
+        System.out.println(content);
+        textContent.setText(content);
+        return;
     }
 
     @Override
@@ -81,6 +99,7 @@ public class EditFragment extends Fragment {
                 fileContent += (new String(cbuf, 0, hasRead));
             }
 
+            fileReader.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -104,12 +123,12 @@ public class EditFragment extends Fragment {
 
         // 如果是新建文件就不用读取内容了
         if (!isNew){
-            file = new File(filePath, fileName);
+            file = new File(filePath);
             loadFile();
+            fileTitle = fileName.substring(0 , fileName.lastIndexOf("."));
+            textTitle.setText(fileTitle);
+            textContent.setText(fileContent);
         }
-
-        textTitle.setText(fileName.substring(0 , fileName.lastIndexOf(".")));
-        textContent.setText(fileContent);
 
         /**
          * 文本更改监听器
@@ -120,16 +139,17 @@ public class EditFragment extends Fragment {
             }
 
             /**
-             * TODO 进行撤回与恢复的操作
+             * 压入撤回队列
              * */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                System.out.println(s);
+                isTextChange = true; // 已经改变
+                beforeString.add(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                isTextChange = true;
             }
         });
 

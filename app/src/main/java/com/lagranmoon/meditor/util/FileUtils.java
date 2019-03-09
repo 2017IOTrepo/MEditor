@@ -2,9 +2,11 @@ package com.lagranmoon.meditor.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.ViewUtils;
 import android.widget.Toast;
 
@@ -83,6 +85,7 @@ public class FileUtils {
         Intent intent = new Intent(context, EditActivity.class);
         intent.putExtra(EditFragment.FILE_NAME_KEY, files.getTitle());
         intent.putExtra(EditFragment.FILE_PATH_KEY, files.getPath());
+        intent.putExtra(EditFragment.IF_NEW, false);
         intent.setAction(Intent.ACTION_VIEW);
         //设置数据URI与数据类型匹配
         intent.setDataAndType(Uri.fromFile(new File(files.getPath())), "file");
@@ -91,12 +94,50 @@ public class FileUtils {
 
     /*
     * 分享文件
+    * TODO 分享文件逻辑bug
     * */
-    public static void shareFiles(File file, Context mContext){
+    public static void shareFiles(String filePath, Context mContext){
         Intent share = new Intent(Intent.ACTION_SEND);
-        share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-        share.setType("*/*");
+
+        /**
+         * 下面这两句是android7.0往后需要写的
+         *  */
+        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Uri fileUri = FileProvider.getUriForFile(mContext, "com.xmmmmovo.fileprovider", new File(filePath));
+
+        share.setDataAndType(fileUri, getMimeType(filePath));
+//        share.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        System.out.println(filePath);
+        share.putExtra(Intent.EXTRA_STREAM, fileUri);
         mContext.startActivity(Intent.createChooser(share, "分享"));
+    }
+
+    // 根据文件后缀名获得对应的MIME类型
+    private static String getMimeType(String filePath) {
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        String mime = "*/*";
+        if (filePath != null) {
+            try {
+                mmr.setDataSource(filePath);
+                mime = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE);
+            } catch (IllegalStateException e) {
+                return mime;
+            } catch (IllegalArgumentException e) {
+                return mime;
+            } catch (RuntimeException e) {
+                return mime;
+            }
+        }
+        return mime;
+    }
+
+    public static void changeFileName(String filePath, String newName, String beforeName){
+        File oFile = new File(filePath);
+        String newFilePath = filePath.replace(beforeName + ".md", newName);
+        System.out.println(newFilePath);
+        System.out.println(filePath);
+        File nFile = new File(newFilePath);
+        oFile.renameTo(nFile);
+        return;
     }
 }

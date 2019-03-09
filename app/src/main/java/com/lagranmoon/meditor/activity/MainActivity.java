@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ import com.lagranmoon.meditor.util.FileUtils;
 import com.lagranmoon.meditor.util.RequestPermissions;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,10 +86,13 @@ public class MainActivity extends BaseActivity
 
         setSupportActionBar(toolbar);
 
+        /**
+         *  新建文件逻辑
+         * */
         add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //仅是跳转到edit_activity 未完成文件操作
+                //仅是跳转到edit_activity
                 creatNote();
             }
         });
@@ -167,6 +172,7 @@ public class MainActivity extends BaseActivity
      * 初始化
      * */
     void initView(){
+        mContext = MainActivity.this;
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         add_button = (FloatingActionButton) findViewById(R.id.add_button_in_mainactivity);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -180,7 +186,6 @@ public class MainActivity extends BaseActivity
     * 新建文本
     * */
     private void creatNote() {
-        mContext = MainActivity.this;
         Intent intent = new Intent(mContext, EditActivity.class);
         intent.putExtra(EditFragment.IF_NEW, true);
         intent.putExtra(EditFragment.FILE_PATH_KEY, rootFilePath + "/MEditor_works");
@@ -251,8 +256,6 @@ public class MainActivity extends BaseActivity
             }
 
         }
-
-
     }
 
     /*
@@ -357,7 +360,7 @@ public class MainActivity extends BaseActivity
                     SearchResultFilesList = new ArrayList<>();
 
                     // 简陋至极的搜索逻辑
-                    // 复杂度高到爆炸
+                    // 时间复杂度高到爆炸
                     for (Files containFile:
                             mFiles) {
                         if (containFile.getTitle().contains(query))
@@ -405,7 +408,8 @@ public class MainActivity extends BaseActivity
     * */
     @Override
     public void onItemLongClick(final Files files) {
-        String[] choice = {"删除", "分享"};
+        final EditText editText = new EditText(mContext);
+        String[] choice = {"删除", "分享", "重命名"};
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setItems(choice, new DialogInterface.OnClickListener() {
@@ -415,13 +419,35 @@ public class MainActivity extends BaseActivity
                             case 0:
                                 new File(files.getPath()).delete();
                                 mFiles.remove(files);
-//                              initRecyclerView(mFiles);
-//                              getFileListSucceed();
+                                initRecyclerView(mFiles);
+                                getFileListSucceed();
                                 Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                                 break;
 
                             case 1:
-                                FileUtils.shareFiles(new File(files.getPath(), files.getTitle()), MainActivity.this);
+                                FileUtils.shareFiles(files.getPath(), MainActivity.this);
+                                break;
+
+                            case 2:
+                                new AlertDialog.Builder(mContext)
+                                        .setTitle("重命名")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                String newName = editText.getText().toString();
+                                                FileUtils.changeFileName(files.getPath(), newName, files.getTitle());
+                                                files.setTitle(newName);
+                                                initRecyclerView(mFiles);
+                                                getFileListSucceed();
+                                            }
+                                        })
+                                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        })
+                                        .setView(editText)
+                                        .show();
                                 break;
                         }
 
