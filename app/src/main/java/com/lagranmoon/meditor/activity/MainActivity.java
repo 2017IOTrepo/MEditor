@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,7 +76,10 @@ public class MainActivity extends BaseActivity
     private File file;
     private String rootFilePath;
 
+    public boolean isNight = false;
+
     private long customTime = 0;
+    private int theme = R.style.AppTheme;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -318,8 +322,15 @@ public class MainActivity extends BaseActivity
 
         if (id == R.id.nightTheme) {
             // TODO 夜间模式
-            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
+            if (isNight) {
+                theme = R.style.DarkTheme;
+                isNight = true;
+            }else {
+                theme = R.style.AppTheme;
+            }
+            this.recreate();
 
+            Toast.makeText(MainActivity.this, "未完成", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.action_settings) {
             SettingsActivity.startActivity(MainActivity.this);
         } else if (id == R.id.diaryUI) {
