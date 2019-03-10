@@ -21,7 +21,7 @@ import com.lagranmoon.meditor.R;
  */
 public class SymbolView {
     private  final  int TILE_WIDTH=60;
-    private final String symbol="#>*-._[]";
+    private final String symbol="#>*-._[]()\\'~`";
     private LinearLayout linearLayout;
     private PopupWindow popupWindow;
     private View rootView;
@@ -42,7 +42,7 @@ public class SymbolView {
             TextView textView = new TextView(context);
             textView.setGravity(Gravity.CENTER);
             if(i==0) {
-                textView.setText(String.valueOf("--|"));
+                textView.setText(String.valueOf("4spec"));
             }
             else
             {

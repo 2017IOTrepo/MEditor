@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.lagranmoon.meditor.R;
@@ -18,6 +20,7 @@ import com.lagranmoon.meditor.fragment.DisplayFragment;
 import com.lagranmoon.meditor.fragment.EditFragment;
 import com.lagranmoon.meditor.util.ActivityUtil;
 import com.lagranmoon.meditor.util.FileUtils;
+import com.lagranmoon.meditor.view.SymbolView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +44,8 @@ public class EditActivity extends BaseActivity{
     EditFragment editFragment;
     DisplayFragment displayFragment;
 
+    private SymbolView symbolView; // 一个快捷输入
+
     private ViewPager mViewPager;//滑动效果
 
     private LinkedList<String> backList = new LinkedList<>(); // 回退队列
@@ -56,6 +61,19 @@ public class EditActivity extends BaseActivity{
 
         mViewPager = (ViewPager)findViewById(R.id.edit_View_Pager);
         InitViewPager();// 初始化ViewPager
+
+        View rootView = getWindow().getDecorView();
+        symbolView = new SymbolView(this, rootView);
+        symbolView.setVisible(true);
+        symbolView.setOnSymbolViewClick(new SymbolView.OnSymbolViewClick() {
+            /**
+             * 快捷输入
+             * */
+            @Override
+            public void onClick(View view, String text) {
+                editFragment.insertText(text.equals("4spec") ? "    " : text);
+            }
+        });
 
         activityUtil = new ActivityUtil();
     }
@@ -84,6 +102,7 @@ public class EditActivity extends BaseActivity{
              * */
             @Override
             public void onPageSelected(int position) {
+                symbolView.setVisible((position == 0 ? true : false));
                 displayFragment.setMarkdownContent(editFragment.getTextContent());
                 displayFragment.setMarkdownTitle(editFragment.getFileTitle());
             }

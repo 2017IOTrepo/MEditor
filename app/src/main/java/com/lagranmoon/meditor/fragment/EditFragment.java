@@ -43,7 +43,7 @@ public class EditFragment extends Fragment {
     public boolean isTitleChanged = false;
     public LinkedList<String> beforeString = new LinkedList<>(); // 所有的撤销栈
 
-    private SymbolView symbolView; // 一个快捷输入
+    private Editable editable; // 进行插入点的计算
 
     public static EditFragment getInstance(String filePath, String fileName, boolean ifNew){
 
@@ -114,6 +114,12 @@ public class EditFragment extends Fragment {
             e.printStackTrace();
         }
         return;
+    }
+
+    public void insertText(String str){
+        int index = textContent.getSelectionStart();
+        editable = textContent.getText();
+        editable.insert(index, str);
     }
 
     @Nullable

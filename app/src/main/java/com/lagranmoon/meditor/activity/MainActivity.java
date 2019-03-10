@@ -156,6 +156,7 @@ public class MainActivity extends BaseActivity
     protected void onRestart() {
         super.onRestart();
 
+        // TODO 修改文件列表BUG
         if (!(searchView != null && searchView.isShown() && IsSearchViewShow)){
             mFiles.clear();
             loadFileList();
@@ -305,7 +306,6 @@ public class MainActivity extends BaseActivity
         mRecyclerView.setLongClickable(true);
         fileAdapter.setOnItemClickLitener(this);
     }
-
 
     /*
     * 侧边栏菜单逻辑
