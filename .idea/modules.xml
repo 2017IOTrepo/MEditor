@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MEditor.iml" filepath="$PROJECT_DIR$/MEditor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/textWarrior/textWarrior.iml" filepath="$PROJECT_DIR$/textWarrior/textWarrior.iml" />
     </modules>
   </component>
 </project>

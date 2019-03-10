@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.lagranmoon.meditor.R;
+import com.lagranmoon.meditor.view.SymbolView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +42,8 @@ public class EditFragment extends Fragment {
     public boolean isTextChange = false;
     public boolean isTitleChanged = false;
     public LinkedList<String> beforeString = new LinkedList<>(); // 所有的撤销栈
+
+    private SymbolView symbolView; // 一个快捷输入
 
     public static EditFragment getInstance(String filePath, String fileName, boolean ifNew){
 
@@ -120,6 +123,8 @@ public class EditFragment extends Fragment {
 
         textTitle = view.findViewById(R.id.edit_title_text);
         textContent = view.findViewById(R.id.edit_content_text);
+
+
 
         Bundle bundle = getArguments();
         fileName = bundle.getString(FILE_NAME_KEY);

@@ -288,6 +288,7 @@ public class MainActivity extends BaseActivity
                         suf.equalsIgnoreCase("markdown")) {
                     tempFiles = FileUtils.getFile(files[i]);
                     mFiles.add(tempFiles);
+//                    System.out.println(tempFiles.getPath());
 
                     Log.d("FileName", files[i].getName());
                 }

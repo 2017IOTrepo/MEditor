@@ -21,7 +21,7 @@ import com.lagranmoon.meditor.R;
  */
 public class SymbolView {
     private  final  int TILE_WIDTH=60;
-    private final String symbol="→{}();,=\"|'&![]<>+-\\/*.%~?#$@:_";
+    private final String symbol="#>*-._[]";
     private LinearLayout linearLayout;
     private PopupWindow popupWindow;
     private View rootView;

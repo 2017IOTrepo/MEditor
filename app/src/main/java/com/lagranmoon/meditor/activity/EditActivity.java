@@ -153,10 +153,19 @@ public class EditActivity extends BaseActivity{
      * 流写入
      * */
     void save(){
+        if (isNew){
+            filePath += "/" + editFragment.getFileTitle() + ".md";
+        }
+        System.out.println(filePath);
+        if (editFragment.isTitleChanged && !isNew){
+            filePath = FileUtils.changeFileName(filePath, editFragment.getFileTitle() + ".md", fileName);
+        }
         try {
             FileWriter fileWriter = new FileWriter(new File(filePath));
             fileWriter.write(editFragment.getTextContent());
             fileWriter.close();
+            editFragment.isTextChange = false;
+            editFragment.isTitleChanged = false;
             Toast.makeText(this, "保存成功！", Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "保存失败！", Toast.LENGTH_LONG).show();
@@ -192,10 +201,6 @@ public class EditActivity extends BaseActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         editFragment.isTextChange = false;
-                        if (editFragment.isTitleChanged){
-                            editFragment.isTitleChanged = false;
-                            FileUtils.changeFileName(filePath, editFragment.getFileTitle() + ".md", fileName);
-                        }
                         save();
                         onBackPressed();
                     }

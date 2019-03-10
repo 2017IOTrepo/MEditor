@@ -134,11 +134,13 @@ public class FileUtils {
     /**
      * 重命名函数
      * */
-    public static void changeFileName(String filePath, String newName, String beforeName){
+    public static String changeFileName(String filePath, String newName, String beforeName){
+//        System.out.println(beforeName);
+//        System.out.println(newName);
         File oFile = new File(filePath);
         String newFilePath = filePath.replace(beforeName, newName);
         File nFile = new File(newFilePath);
         oFile.renameTo(nFile);
-        return;
+        return nFile.getAbsolutePath();
     }
 }
