@@ -41,6 +41,9 @@ public class EditFragment extends Fragment {
 
     public boolean isTextChange = false;
     public boolean isTitleChanged = false;
+    public boolean isWithDraw = false;
+    public boolean isEndFr = true;
+    public int index = 0;
     public LinkedList<String> beforeString = new LinkedList<>(); // 所有的撤销栈
 
     private Editable editable; // 进行插入点的计算
@@ -83,7 +86,8 @@ public class EditFragment extends Fragment {
      * 设定内容
      * */
     public void setTextContent(String content){
-        System.out.println(content);
+//        System.out.println(content);
+//        textContent.setText("");
         textContent.setText(content);
         return;
     }
@@ -122,6 +126,10 @@ public class EditFragment extends Fragment {
         editable.insert(index, str);
     }
 
+    public EditText getContentView(){
+        return textContent;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -129,8 +137,6 @@ public class EditFragment extends Fragment {
 
         textTitle = view.findViewById(R.id.edit_title_text);
         textContent = view.findViewById(R.id.edit_content_text);
-
-
 
         Bundle bundle = getArguments();
         fileName = bundle.getString(FILE_NAME_KEY);
@@ -159,9 +165,16 @@ public class EditFragment extends Fragment {
              * */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                index = start + count;
                 System.out.println(s);
                 isTextChange = true; // 已经改变
-                beforeString.add(s.toString());
+
+                if (isWithDraw){
+                    isWithDraw = true;
+                }else {
+                    beforeString.add(s.toString());
+                }
+                System.out.println(isWithDraw);
             }
 
             @Override
@@ -186,7 +199,6 @@ public class EditFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 

@@ -131,8 +131,11 @@ public class EditActivity extends BaseActivity{
                     Toast.makeText(this, "没有可以撤回的东西了！", Toast.LENGTH_LONG).show();
                 }else {
                     String beString = editFragment.beforeString.removeLast();
+                    System.out.println(editFragment.beforeString);
+//                    System.out.println(beString);
                     editFragment.setTextContent(beString);
                     backList.add(beString);
+                    editFragment.isWithDraw = true;
                 }
                 break;
 
